@@ -3,14 +3,18 @@ package cpen221.mp3.wikimediator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import fastily.jwiki.core.*;
+import fastily.jwiki.dwrap.*;
 
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
 	private Map<String, Integer> timeMap;
+	private Wiki wiki;
 
 	//constructor
 	public WikiMediator(){
 		timeMap = new HashMap<String, Integer>();
+		wiki = new Wiki("en.wikipedia.org");
 	}
 
 	/**
@@ -99,7 +103,7 @@ public class WikiMediator {
 	 * @return a List of Strings containing the page titles meeting the
 	 *         requirements from query
 	 */
-  List<String> excuteQuery(String query){
-    return null;
-  }
+	List<String> executeQuery(String query){
+		return null;
+	}
 }
