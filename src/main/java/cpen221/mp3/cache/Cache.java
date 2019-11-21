@@ -1,14 +1,22 @@
 package cpen221.mp3.cache;
 
+import javax.lang.model.element.Element;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Cache<T extends Cacheable> {
 
     /* the default cache size is 32 objects */
     public static final int DSIZE = 32;
+    public int capacity;
 
     /* the default timeout value is 3600s */
     public static final int DTIMEOUT = 3600;
+    public int timeout;
 
     /* TODO: Implement this datatype */
+    Map<T, Date> cache;
 
     /**
      * Create a cache with a fixed capacity and a timeout value.
@@ -20,6 +28,9 @@ public class Cache<T extends Cacheable> {
      */
     public Cache(int capacity, int timeout) {
         // TODO: implement this constructor
+        this.capacity = capacity;
+        this.timeout = timeout;
+        this.cache= new HashMap<>(capacity);
     }
 
     /**
@@ -27,6 +38,7 @@ public class Cache<T extends Cacheable> {
      */
     public Cache() {
         this(DSIZE, DTIMEOUT);
+        this.cache = new HashMap<>(DTIMEOUT);
     }
 
     /**
@@ -36,6 +48,9 @@ public class Cache<T extends Cacheable> {
      */
     boolean put(T t) {
         // TODO: implement this method
+        Date time = new Date(System.currentTimeMillis());
+        System.out.println(time);
+        cache.put(t, time);
         return false;
     }
 
@@ -43,11 +58,16 @@ public class Cache<T extends Cacheable> {
      * @param id the identifier of the object to be retrieved
      * @return the object that matches the identifier from the cache
      */
-    T get(String id) {
+    T get(String id) throws NoSuchObjectException {
         /* TODO: change this */
         /* Do not return null. Throw a suitable checked exception when an object
             is not in the cache. */
-        return null;
+        for (T t: cache.keySet()){
+            if (t.id().equals(id)){
+               return t;
+            }
+        }
+        throw new NoSuchObjectException();
     }
 
     /**
@@ -60,6 +80,20 @@ public class Cache<T extends Cacheable> {
      */
     boolean touch(String id) {
         /* TODO: Implement this method */
+        Date refresh = new Date(System.currentTimeMillis());
+
+        for (T t: cache.keySet()){
+            if (t.id().equals(id)){
+                cache.remove(t);
+                cache.put(t, refresh);
+                // check if successful
+                if (cache.containsKey(refresh)){
+                    if (cache.get(refresh).equals(t))
+                        return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -73,6 +107,15 @@ public class Cache<T extends Cacheable> {
      */
     boolean update(T t) {
         /* TODO: implement this method */
+        for (T find: cache.keySet()){
+            if (t.equals(find)){
+                // do something to update t, put new t
+                // mutable, do not need to put again maybe?
+
+                // check if it's updated, return true if so
+                return true;
+            }
+        }
         return false;
     }
 
