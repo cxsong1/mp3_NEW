@@ -79,10 +79,26 @@ public class WikiMediator {
 		return -1;
 	}
 
+	/**
+	 * Finds path of links between two Wikipedia pages
+	 *
+	 * @param startPage String name of Wikipedia page at which to start
+	 * @param stopPage String name of the Wikipedia page we want to end on
+	 * @return a List of Strings containing the links to follow to get from
+	 *         startPage to endPage
+	 */
 	List<String> getPath(String startPage, String stopPage){
 		return null;
 	}
 
+	//TODO: need to modify the spec for the specific grammar of the query
+	/**
+	 * Finds a list of pages that meet the structured query from the user
+	 *
+	 * @param query String representing the structured query.....
+	 * @return a List of Strings containing the page titles meeting the
+	 *         requirements from query
+	 */
   List<String> excuteQuery(String query){
     return null;
   }
