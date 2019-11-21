@@ -1,9 +1,15 @@
 package cpen221.mp3.wikimediator;
 
+import java.util.List;
+
 public class WikiMediator {
 
-    /* TODO: Implement this datatype
+	//constructor
+	public WikiMediator(){
 
+	}
+
+		/*
         You must implement the methods with the exact signatures
         as provided in the statement for this mini-project.
 
@@ -14,4 +20,11 @@ public class WikiMediator {
 
      */
 
+		List<String> getPath(String startPage, String stopPage){
+			return null;
+		}
+
+    List<String> excuteQuery(String query){
+    	return null;
+    }
 }
