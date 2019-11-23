@@ -1,5 +1,6 @@
 package cpen221.mp3.wikimediator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,8 @@ public class WikiMediator {
 	 * @param limit max number of elements (ie. search results) returned
 	 * @return a List of Strings containing the page titles that match the query string
 	 */
-	public List<String> simpleSearch(String query, int limit){
-		return null;
+	public List<String> simpleSearch(String query, int limit) {
+		return wiki.allPages(query, false, false, limit, null);
 	}
 
 	/**
@@ -35,7 +36,7 @@ public class WikiMediator {
 	 * @return String with the text on the "pageTitle" Wikipedia page
 	 */
 	public String getPage(String pageTitle){
-		return null;
+		return wiki.getPageText(pageTitle);
 	}
 
 	/**
@@ -44,7 +45,7 @@ public class WikiMediator {
 	 *
 	 * @param pageTitle String name of the starting Wikipedia page
 	 * @param hops max number of links that can be followed
-	 * @return a List of Strings containing the the page titles that match the query string
+	 * @return a List of Strings that can be reached by following a maximum of hops links from pageTitle
 	 */
 
 	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
