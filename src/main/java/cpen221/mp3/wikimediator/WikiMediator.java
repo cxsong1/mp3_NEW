@@ -1,5 +1,6 @@
 package cpen221.mp3.wikimediator;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,13 +10,13 @@ import fastily.jwiki.dwrap.*;
 
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
-	private Map<String, Integer> timeMap;
+	private Map<String, Long> timeMap;
 	private Wiki wiki;
 
 	//constructor
 	public WikiMediator(){
-		timeMap = new HashMap<String, Integer>();
-		wiki = new Wiki("en.wikipedia.org");
+		this.timeMap = new HashMap<String, Long>();
+		this.wiki = new Wiki("en.wikipedia.org");
 	}
 
 	/**
@@ -36,6 +37,7 @@ public class WikiMediator {
 	 * @return String with the text on the "pageTitle" Wikipedia page
 	 */
 	public String getPage(String pageTitle){
+		this.timeMap.put(pageTitle, System.currentTimeMillis());
 		return wiki.getPageText(pageTitle);
 	}
 
@@ -50,7 +52,32 @@ public class WikiMediator {
 
 	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
 	public List<String> getConnectedPages(String pageTitle, int hops){
-		return null;
+		List<String> connected = new ArrayList<>();
+		List<String> currLinks = new ArrayList<>();
+
+		for(int i = 0; i<hops; i++) {
+			currLinks = wiki.getLinksOnPage(pageTitle, null);
+			connected.addAll(currLinks);
+			getConnectedHelper()
+
+		}
+	}
+
+	private List<String> getConnectedHelper(List<String> pageTitles, List<String> links, int start){
+		if(start == pageTitles.size()){
+			return links;
+		}else{
+			links.addAll(wiki.getLinksOnPage(pageTitles.get(start), null));
+			return getConnectedHelper(pageTitles, links, start+1);
+		}
+	}
+
+	private List<String> linkToTitle (List<String> pageLinks){
+		for(int i = 0; i<pageLinks.size(); i++) {
+			StringBuilder link = new StringBuilder(pageLinks.get(i));
+
+		}
+
 	}
 
 	/**
