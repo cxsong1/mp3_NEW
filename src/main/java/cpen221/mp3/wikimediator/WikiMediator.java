@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
 
@@ -99,7 +101,25 @@ public class WikiMediator {
 	 *         up to a max number, in non-increasing order
 	 */
 	public List<String> zeitgeist(int limit){
-		return null;
+		Map<String, Integer> sortedFreqMap = new HashMap<>();
+		int count = 0;
+		List<String> mostCommon = new ArrayList<>();
+
+		//sorts freqMap to be in non-increasing order
+		sortedFreqMap = this.freqMap.entrySet()
+																.stream()
+																.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
+																.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, HashMap::new));
+
+		for(String s: sortedFreqMap.keySet()){
+			if(count<limit) {
+				mostCommon.add(s);
+				count++;
+			}else{
+				return mostCommon;
+			}
+		}
+		return mostCommon;
 	}
 
 	/**

@@ -1,11 +1,12 @@
 package cpen221.mp3;
 
+import cpen221.mp3.cache.Cache;
+import cpen221.mp3.wikimediator.WikiMediator;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 public class Tests {
 
-    /*
-        You can add your tests here.
-        Remember to import the packages that you need, such
-        as cpen221.mp3.cache.
-     */
+	public void z
 
 }
