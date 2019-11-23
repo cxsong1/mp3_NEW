@@ -1,20 +1,19 @@
 package cpen221.mp3.wikimediator;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
+import cpen221.mp3.cache.Cache;
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
+import javafx.util.Pair;
 
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
 	private Map<String, Long> timeMap;
 	private Wiki wiki;
 	private Map<String, Integer> freqMap;
+	Cache myCache = new Cache(256, 12 * 3600);
 
 	//constructor
 	public WikiMediator(){
@@ -54,28 +53,27 @@ public class WikiMediator {
 	 */
 
 	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
-	public List<String> getConnectedPages(String pageTitle, int hops){
+	public List<String> getConnectedPages(String pageTitle, int hops) {
 		List<String> connected = new ArrayList<>();
-		List<String> currLinks = new ArrayList<>();
-		List<String> currTitles = new ArrayList<>();
-		List<String> links = new ArrayList<>();
+		Stack<Pair<String, Integer>> stack = new Stack<>();
+		stack.push(new Pair<>(pageTitle, 0));
 
-		for(int i = 0; i<hops; i++) {
-			currLinks = wiki.getLinksOnPage(pageTitle, null);
-			connected.addAll(currLinks);
-			currTitles = linkToTitle(currLinks);
-			links = getConnectedHelper(currTitles, links ,0);
-
+		while (stack.size() > 0){
+			Pair parent = stack.pop();
+			if ((int)parent.getValue() < hops){
+				String title = (String) parent.getKey();
+				List<String> neighbours = linkToTitle(wiki.getLinksOnPage(title));
+				int level = (int) parent.getValue() + 1;
+				for (String s: neighbours){
+					stack.push(new Pair<>(s, level));
+					if (!connected.contains(s)){
+						connected.add(s);
+					}
+				}
+			}
 		}
-	}
 
-	private List<String> getConnectedHelper(List<String> pageTitles, List<String> links, int start){
-		if(start == pageTitles.size()){
-			return links;
-		}else{
-			links.addAll(wiki.getLinksOnPage(pageTitles.get(start), null));
-			return getConnectedHelper(pageTitles, links, start+1);
-		}
+		return connected;
 	}
 
 	private List<String> linkToTitle (List<String> pageLinks){
@@ -86,7 +84,7 @@ public class WikiMediator {
 			StringBuilder link = new StringBuilder(pageLinks.get(i));
 			title = link.delete(0, 21);
 			while(title.toString().contains("_")){
-				title.replace(title.indexOf("_"), title.indexOf("_"), " ");
+				title.replace(title.indexOf(""), title.indexOf(""), " ");
 			}
 			pageTitles.add(title.toString());
 		}
@@ -101,25 +99,7 @@ public class WikiMediator {
 	 *         up to a max number, in non-increasing order
 	 */
 	public List<String> zeitgeist(int limit){
-		Map<String, Integer> sortedFreqMap = new HashMap<>();
-		int count = 0;
-		List<String> mostCommon = new ArrayList<>();
-
-		//sorts freqMap to be in non-increasing order
-		sortedFreqMap = this.freqMap.entrySet()
-																.stream()
-																.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
-																.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, HashMap::new));
-
-		for(String s: sortedFreqMap.keySet()){
-			if(count<limit) {
-				mostCommon.add(s);
-				count++;
-			}else{
-				return mostCommon;
-			}
-		}
-		return mostCommon;
+		return null;
 	}
 
 	/**

@@ -46,7 +46,7 @@ public class Cache<T extends Cacheable> {
      * If the cache is full then remove the least recently accessed object to
      * make room for the new object.
      */
-    boolean put(T t) {
+    public boolean put(T t) {
         // TODO: implement this method
         Date time = new Date(System.currentTimeMillis());
         System.out.println(time);
@@ -58,7 +58,7 @@ public class Cache<T extends Cacheable> {
      * @param id the identifier of the object to be retrieved
      * @return the object that matches the identifier from the cache
      */
-    T get(String id) throws NoSuchObjectException {
+    public T get(String id) throws NoSuchObjectException {
         /* TODO: change this */
         /* Do not return null. Throw a suitable checked exception when an object
             is not in the cache. */
@@ -78,7 +78,7 @@ public class Cache<T extends Cacheable> {
      * @param id the identifier of the object to "touch"
      * @return true if successful and false otherwise
      */
-    boolean touch(String id) {
+    public boolean touch(String id) {
         /* TODO: Implement this method */
         Date refresh = new Date(System.currentTimeMillis());
 
@@ -105,7 +105,7 @@ public class Cache<T extends Cacheable> {
      * @param t the object to update
      * @return true if successful and false otherwise
      */
-    boolean update(T t) {
+    public boolean update(T t) {
         /* TODO: implement this method */
         for (T find: cache.keySet()){
             if (t.equals(find)){
