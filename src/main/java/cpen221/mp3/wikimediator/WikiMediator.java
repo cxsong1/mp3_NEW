@@ -12,6 +12,7 @@ public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
 	private Map<String, Long> timeMap;
 	private Wiki wiki;
+	private Map<String, Integer> freqMap;
 
 	//constructor
 	public WikiMediator(){
@@ -54,11 +55,14 @@ public class WikiMediator {
 	public List<String> getConnectedPages(String pageTitle, int hops){
 		List<String> connected = new ArrayList<>();
 		List<String> currLinks = new ArrayList<>();
+		List<String> currTitles = new ArrayList<>();
+		List<String> links = new ArrayList<>();
 
 		for(int i = 0; i<hops; i++) {
 			currLinks = wiki.getLinksOnPage(pageTitle, null);
 			connected.addAll(currLinks);
-			getConnectedHelper()
+			currTitles = linkToTitle(currLinks);
+			links = getConnectedHelper(currTitles, links ,0);
 
 		}
 	}
@@ -73,11 +77,18 @@ public class WikiMediator {
 	}
 
 	private List<String> linkToTitle (List<String> pageLinks){
+		List<String> pageTitles = new ArrayList<>();
+		StringBuilder title;
+
 		for(int i = 0; i<pageLinks.size(); i++) {
 			StringBuilder link = new StringBuilder(pageLinks.get(i));
-
+			title = link.delete(0, 21);
+			while(title.toString().contains("_")){
+				title.replace(title.indexOf("_"), title.indexOf("_"), " ");
+			}
+			pageTitles.add(title.toString());
 		}
-
+		return pageTitles;
 	}
 
 	/**
