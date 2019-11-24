@@ -42,6 +42,12 @@ public class Tests {
 	public void testGetConnectedPages1() {
 		WikiMediator wikiMediator = new WikiMediator();
 		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Joker", 2);
+		/*
+		for (String s: connectedPageTitles){
+			System.out.println(s);
+		}
+		 */
+		System.out.println(connectedPageTitles.size());
 		assertTrue(connectedPageTitles.size() > 0);
 	}
 
@@ -49,7 +55,42 @@ public class Tests {
 	public void testGetConnectedPages2() {
 		WikiMediator wikiMediator = new WikiMediator();
 		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Zona B", 1);
+		System.out.println(connectedPageTitles.size());
+
 		assertTrue(connectedPageTitles.size() > 0);
+	}
+
+	@Test
+	public void testGetConnectedPages3() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Joker", 1);
+		/*
+		for (String s: connectedPageTitles){
+			System.out.println(s);
+		}
+		 */
+		System.out.println(connectedPageTitles.size());
+		assertTrue(connectedPageTitles.size() > 0);
+	}
+
+	@Test
+	public void testGetConnectedPages4() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Joker", 1);
+		ArrayList<String> summation = new ArrayList<>(connectedPageTitles);
+
+		for (String s: connectedPageTitles){
+			List<String> each = wikiMediator.getConnectedPages(s, 1);
+			for (String notDuplicate: each){
+				if (!summation.contains(notDuplicate)){
+					summation.add(notDuplicate);
+					System.out.println(notDuplicate + ", " + each.size());
+				}
+			}
+		}
+		System.out.println(summation.size());
+
+		assertEquals(7472, summation.size());
 	}
 
 }

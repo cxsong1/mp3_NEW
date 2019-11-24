@@ -65,7 +65,7 @@ public class WikiMediator {
 
 		while (stack.size() > 0){
 			Pair parent = stack.pop();
-			if ((int)parent.getValue() <= hops){
+			if ((int)parent.getValue() < hops){
 				String title = (String) parent.getKey();
 				List<String> neighbours = wiki.getLinksOnPage(title);
 				int level = (int) parent.getValue() + 1;
