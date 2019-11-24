@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
+import javafx.util.Pair;
 
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
@@ -58,7 +59,7 @@ public class WikiMediator {
 
 	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
 	public List<String> getConnectedPages(String pageTitle, int hops) {
-		/*List<String> connected = new ArrayList<>();
+		List<String> connected = new ArrayList<>();
 		Stack<Pair<String, Integer>> stack = new Stack<>();
 		stack.push(new Pair<>(pageTitle, 0));
 
@@ -77,8 +78,7 @@ public class WikiMediator {
 			}
 		}
 
-		return connected;*/
-		return null;
+		return connected;
 	}
 
 

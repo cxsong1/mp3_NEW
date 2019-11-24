@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class Tests {
 
@@ -27,6 +28,13 @@ public class Tests {
 
 		System.out.println(myMediator.zeitgeist(5));
 		assertEquals(results, myMediator.zeitgeist(5));
+	}
+
+	@Test
+	public void testGetConnectedPages() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Joker", 2);
+		assertTrue(connectedPageTitles.size() > 0);
 	}
 
 }
