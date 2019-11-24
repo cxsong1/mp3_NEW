@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
-import javafx.util.Pair;
 
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
@@ -18,6 +17,7 @@ public class WikiMediator {
 	public WikiMediator(){
 		this.timeMap = new HashMap<String, Long>();
 		this.wiki = new Wiki("en.wikipedia.org");
+		this.freqMap = new HashMap<>();
 	}
 
 	/**
@@ -28,6 +28,11 @@ public class WikiMediator {
 	 * @return a List of Strings containing the page titles that match the query string
 	 */
 	public List<String> simpleSearch(String query, int limit) {
+		if(this.freqMap.containsKey(query)){
+			this.freqMap.put(query, this.freqMap.get(query)+1);
+		}else {
+			this.freqMap.put(query, 1);
+		}
 		return wiki.allPages(query, false, false, limit, null);
 	}
 
@@ -53,7 +58,7 @@ public class WikiMediator {
 
 	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
 	public List<String> getConnectedPages(String pageTitle, int hops) {
-		List<String> connected = new ArrayList<>();
+		/*List<String> connected = new ArrayList<>();
 		Stack<Pair<String, Integer>> stack = new Stack<>();
 		stack.push(new Pair<>(pageTitle, 0));
 
@@ -72,7 +77,8 @@ public class WikiMediator {
 			}
 		}
 
-		return connected;
+		return connected;*/
+		return null;
 	}
 
 
