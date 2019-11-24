@@ -39,9 +39,16 @@ public class Tests {
 	}
 
 	@Test
-	public void testGetConnectedPages() {
+	public void testGetConnectedPages1() {
 		WikiMediator wikiMediator = new WikiMediator();
 		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Joker", 2);
+		assertTrue(connectedPageTitles.size() > 0);
+	}
+
+	@Test
+	public void testGetConnectedPages2() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Zona B", 1);
 		assertTrue(connectedPageTitles.size() > 0);
 	}
 
