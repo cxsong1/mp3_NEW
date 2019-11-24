@@ -67,7 +67,7 @@ public class WikiMediator {
 			Pair parent = stack.pop();
 			if ((int)parent.getValue() < hops){
 				String title = (String) parent.getKey();
-				List<String> neighbours = linkToTitle(wiki.getLinksOnPage(title));
+				List<String> neighbours = wiki.getLinksOnPage(title);
 				int level = (int) parent.getValue() + 1;
 				for (String s: neighbours){
 					stack.push(new Pair<>(s, level));
@@ -79,31 +79,6 @@ public class WikiMediator {
 		}
 
 		return connected;
-	}
-
-
-	private List<String> getConnectedHelper(List<String> pageTitles, List<String> links, int start){
-		if(start == pageTitles.size()){
-			return links;
-		}else{
-			links.addAll(wiki.getLinksOnPage(pageTitles.get(start), null));
-			return getConnectedHelper(pageTitles, links, start+1);
-		}
-	}
-
-	private List<String> linkToTitle (List<String> pageLinks){
-		List<String> pageTitles = new ArrayList<>();
-		StringBuilder title;
-
-		for(int i = 0; i<pageLinks.size(); i++) {
-			StringBuilder link = new StringBuilder(pageLinks.get(i));
-			title = link.delete(0, 21);
-			while(title.toString().contains("_")){
-				title.replace(title.indexOf("_"), title.indexOf("_"), " ");
-			}
-			pageTitles.add(title.toString());
-		}
-		return pageTitles;
 	}
 
 	/**
