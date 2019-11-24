@@ -2,8 +2,8 @@ package cpen221.mp3.wikimediator;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import cpen221.mp3.cache.Cache;
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
 import javafx.util.Pair;
@@ -13,7 +13,6 @@ public class WikiMediator {
 	private Map<String, Long> timeMap;
 	private Wiki wiki;
 	private Map<String, Integer> freqMap;
-	Cache myCache = new Cache(256, 12 * 3600);
 
 	//constructor
 	public WikiMediator(){
@@ -76,6 +75,16 @@ public class WikiMediator {
 		return connected;
 	}
 
+
+	private List<String> getConnectedHelper(List<String> pageTitles, List<String> links, int start){
+		if(start == pageTitles.size()){
+			return links;
+		}else{
+			links.addAll(wiki.getLinksOnPage(pageTitles.get(start), null));
+			return getConnectedHelper(pageTitles, links, start+1);
+		}
+	}
+
 	private List<String> linkToTitle (List<String> pageLinks){
 		List<String> pageTitles = new ArrayList<>();
 		StringBuilder title;
@@ -84,7 +93,7 @@ public class WikiMediator {
 			StringBuilder link = new StringBuilder(pageLinks.get(i));
 			title = link.delete(0, 21);
 			while(title.toString().contains("_")){
-				title.replace(title.indexOf(""), title.indexOf(""), " ");
+				title.replace(title.indexOf("_"), title.indexOf("_"), " ");
 			}
 			pageTitles.add(title.toString());
 		}
@@ -99,7 +108,26 @@ public class WikiMediator {
 	 *         up to a max number, in non-increasing order
 	 */
 	public List<String> zeitgeist(int limit){
-		return null;
+		Map<String, Integer> sortedFreqMap = new HashMap<>();
+		int count = 0;
+		List<String> mostCommon = new ArrayList<>();
+
+		//sorts freqMap to be in non-increasing order
+		//Source : https://howtodoinjava.com/sort/java-sort-map-by-key/?fbclid=IwAR1KZHhiAwwJCmrJmxr6A8g3M_H9NGMRk12-_J88o4xlCr2DkD1EvzAhahk
+		sortedFreqMap = this.freqMap.entrySet()
+																.stream()
+																.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
+																.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, HashMap::new));
+
+		for(String s: sortedFreqMap.keySet()){
+			if(count<limit) {
+				mostCommon.add(s);
+				count++;
+			}else{
+				return mostCommon;
+			}
+		}
+		return mostCommon;
 	}
 
 	/**
