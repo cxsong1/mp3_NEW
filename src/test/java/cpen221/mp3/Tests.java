@@ -17,7 +17,6 @@ public class Tests {
 	@Test
 	public void zeitgeistTest(){
 		List<String> results;
-		Wiki wiki = new Wiki("en.wikipedia.org");
 		WikiMediator myMediator = new WikiMediator();
 
 		myMediator.simpleSearch("Canada", 5);
@@ -92,6 +91,48 @@ public class Tests {
 		System.out.println(summation.size());
 
 		assertEquals(7472, summation.size());
+	}
+
+	@Test
+	public void testTrending() throws InterruptedException {
+		WikiMediator wikiMediator = new WikiMediator();
+
+		wikiMediator.simpleSearch("Canada", 5);
+		wikiMediator.simpleSearch("Canada", 5);
+		wikiMediator.simpleSearch("Canada", 5);
+
+		Thread.sleep(30001);
+
+		wikiMediator.simpleSearch("US", 1);
+		wikiMediator.simpleSearch("US", 1);
+		wikiMediator.simpleSearch("Trophy", 1);
+
+		List<String> expected = new ArrayList<>();
+		expected.add("US");
+		expected.add("Trophy");
+
+		assertEquals(expected, wikiMediator.trending(5));
+	}
+
+	@Test
+	public void testTrending2(){
+		WikiMediator wikiMediator = new WikiMediator();
+
+		wikiMediator.simpleSearch("Canada", 5);
+		wikiMediator.simpleSearch("Rabbit", 5);
+		wikiMediator.simpleSearch("Canoe", 5);
+
+		wikiMediator.simpleSearch("US", 1);
+		wikiMediator.simpleSearch("Delta", 1);
+		wikiMediator.simpleSearch("Trophy", 1);
+
+		List<String> expected = new ArrayList<>();
+		expected.add("Canada");
+		expected.add("Trophy");
+		expected.add("Delta");
+		expected.add("Rabbit");
+
+		assertEquals(expected, wikiMediator.trending(4));
 	}
 
 }

@@ -36,6 +36,7 @@ public class WikiMediator {
 		}else {
 			this.freqMap.put(query, 1);
 		}
+		this.timeMap.put(query, System.currentTimeMillis());
 		return wiki.allPages(query, false, false, limit, null);
 	}
 
@@ -84,7 +85,9 @@ public class WikiMediator {
 	}
 
 		/**
-		 * Returns the most common page titles searched for in non-increasing order
+		 * Returns the most common page titles searched for in non-increasing order. If multiple Strings were
+		 * searched the same number of times, they can be organized in any arbitrary order
+		 * TODO: fix this (ie. order by time searched)
 		 *
 		 * @param limit max number of requests returned
 		 * @return a List of Strings containing the most common searched titles,
@@ -118,10 +121,28 @@ public class WikiMediator {
 	 *
 	 * @param limit max number of elements returned in the List
 	 * @return a List of Strings containing the most common searched titles in the
-	 *         last 30secs, up to a max number, in non-increasing order
+	 *         last 30secs (up to and including), up to a max number, in non-increasing order
 	 */
 	public List<String> trending(int limit){
-		return null;
+		Long currTime = System.currentTimeMillis();
+		List<String> trending = new ArrayList<>();
+		Map<String, Integer> sortedFreqMap = new HashMap<>();
+
+		sortedFreqMap = this.freqMap.entrySet()
+						.stream()
+						.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
+
+		for(String s: sortedFreqMap.keySet()){
+			if(currTime - timeMap.get(s)<= 30000){
+				if(trending.size()<limit) {
+					trending.add(s);
+				}else{
+					break;
+				}
+			}
+		}
+		return trending;
 	}
 
 	/**
@@ -130,7 +151,15 @@ public class WikiMediator {
 	 * @return the max number of search requests seen in any 30-second window
 	 */
 	public int peakLoad30s(){
-		return -1;
+		Map<String, Long> sortedTimeMap = new HashMap<>();
+
+		sortedTimeMap = this.timeMap.entrySet()
+						.stream()
+						.sorted((Map.Entry.<String, Long>comparingByValue().reversed()))
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
+		List<Long> partitions = new ArrayList<>();
+
+
 	}
 
 	/**
