@@ -70,6 +70,7 @@ public class Tests {
 		}
 		 */
 		System.out.println(connectedPageTitles.size());
+		System.out.println(connectedPageTitles);
 		assertTrue(connectedPageTitles.size() > 0);
 	}
 

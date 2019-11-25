@@ -27,7 +27,6 @@ public class Cache<T extends Cacheable> {
      * @param timeout  the duration an object should be in the cache before it times out
      */
     public Cache(int capacity, int timeout) {
-        // TODO: implement this constructor
         this.capacity = capacity;
         this.timeout = timeout;
         this.cache= new HashMap<>(capacity);
@@ -38,7 +37,7 @@ public class Cache<T extends Cacheable> {
      */
     public Cache() {
         this(DSIZE, DTIMEOUT);
-        this.cache = new HashMap<>(DTIMEOUT);
+        this.cache = new HashMap<>(DSIZE);
     }
 
     /**
@@ -49,7 +48,6 @@ public class Cache<T extends Cacheable> {
     public boolean put(T t) {
         // TODO: implement this method
         Date time = new Date(System.currentTimeMillis());
-        System.out.println(time);
         cache.put(t, time);
         return false;
     }

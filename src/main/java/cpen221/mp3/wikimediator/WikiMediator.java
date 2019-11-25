@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
 import javafx.util.Pair;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
@@ -81,13 +83,13 @@ public class WikiMediator {
 		return connected;
 	}
 
-	/**
-	 * Returns the most common page titles searched for in non-increasing order
-	 *
-	 * @param limit max number of requests returned
-	 * @return a List of Strings containing the most common searched titles,
-	 *         up to a max number, in non-increasing order
-	 */
+		/**
+		 * Returns the most common page titles searched for in non-increasing order
+		 *
+		 * @param limit max number of requests returned
+		 * @return a List of Strings containing the most common searched titles,
+		 *         up to a max number, in non-increasing order
+		 */
 	public List<String> zeitgeist(int limit){
 		Map<String, Integer> sortedFreqMap = new HashMap<>();
 		int count = 0;
@@ -98,7 +100,7 @@ public class WikiMediator {
 		sortedFreqMap = this.freqMap.entrySet()
 																.stream()
 																.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
-																.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, HashMap::new));
+																.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
 
 		for(String s: sortedFreqMap.keySet()){
 			if(count<limit) {
