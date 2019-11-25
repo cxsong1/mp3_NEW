@@ -106,10 +106,10 @@ public class Cache<T extends Cacheable> {
     public boolean update(T t) {
         /* TODO: implement this method */
         for (T find: cache.keySet()){
-            if (t.equals(find)){
+            if (t.id().equals(find.id())){
                 // do something to update t, put new t
                 // mutable, do not need to put again maybe?
-
+                find = t;
                 // check if it's updated, return true if so
                 return true;
             }

@@ -54,7 +54,7 @@ public class Tests {
 	@Test
 	public void testGetConnectedPages2() {
 		WikiMediator wikiMediator = new WikiMediator();
-		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Zona B", 1);
+		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Zona B", 2);
 		System.out.println(connectedPageTitles.size());
 
 		assertTrue(connectedPageTitles.size() > 0);
