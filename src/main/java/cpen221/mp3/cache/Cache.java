@@ -85,8 +85,8 @@ public class Cache<T extends Cacheable> {
                 cache.remove(t);
                 cache.put(t, refresh);
                 // check if successful
-                if (cache.containsKey(refresh)){
-                    if (cache.get(refresh).equals(t))
+                for (Map.Entry e: cache.entrySet()){
+                    if (e.getKey() == t && e.getValue() == refresh)
                         return true;
                 }
             }
@@ -114,6 +114,13 @@ public class Cache<T extends Cacheable> {
                 return true;
             }
         }
+
+        for (T find: cache.keySet()){
+            if (t.id().equals(find.id())){
+                return true;
+            }
+        }
+
         return false;
     }
 
