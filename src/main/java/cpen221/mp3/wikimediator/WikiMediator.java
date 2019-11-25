@@ -163,6 +163,8 @@ public class WikiMediator {
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
 		List<Long> partitions = new ArrayList<>();
 
+		int numPartitions = sortedTimeMap.get()
+
 
 	}
 
