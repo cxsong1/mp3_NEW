@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import cpen221.mp3.cache.Cache;
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
 import javafx.util.Pair;
@@ -15,6 +16,7 @@ public class WikiMediator {
 	private Map<String, Long> timeMap;
 	private Wiki wiki;
 	private Map<String, Integer> freqMap;
+	private Cache cache= new Cache(256, 12*3600);
 
 	//constructor
 	public WikiMediator(){
@@ -61,21 +63,23 @@ public class WikiMediator {
 	 */
 
 	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
-	public List<String> getConnectedPages(String pageTitle, int hops) {
+	public List<String> getConnectedPages(String pageTitle, int hops){
 		List<String> connected = new ArrayList<>();
-		Stack<Pair<String, Integer>> stack = new Stack<>();
-		stack.push(new Pair<>(pageTitle, 0));
+		List<String> visited = new ArrayList<>();
+		Queue<Pair<String, Integer>> queue = new LinkedList<>();
+		queue.add(new Pair<>(pageTitle, 0));
 
-		while (stack.size() > 0){
-			Pair parent = stack.pop();
-			if ((int)parent.getValue() < hops){
+		while (queue.size() > 0){
+			Pair parent = queue.poll();
+			if ((int)parent.getValue() < hops && !visited.contains((String) parent.getKey())){
 				String title = (String) parent.getKey();
+				visited.add(title);
 				List<String> neighbours = wiki.getLinksOnPage(title);
 				int level = (int) parent.getValue() + 1;
 				for (String s: neighbours){
-					stack.push(new Pair<>(s, level));
 					if (!connected.contains(s)){
 						connected.add(s);
+						queue.add(new Pair<>(s, level));
 					}
 				}
 			}
