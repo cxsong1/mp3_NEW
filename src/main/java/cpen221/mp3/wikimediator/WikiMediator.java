@@ -163,7 +163,7 @@ public class WikiMediator {
 
 		sortedFreqMap = this.freqMap.entrySet()
 						.stream()
-						.sorted((Map.Entry.<String, Integer>comparingByValue()))
+						.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
 
 		for(String s: sortedFreqMap.keySet()){
@@ -195,7 +195,7 @@ public class WikiMediator {
 
 		sortedRequestMap = this.requestMap.entrySet()
 						.stream()
-						.sorted((Map.Entry.<String, Long>comparingByValue().reversed()))
+						.sorted((Map.Entry.<String, Long>comparingByValue()))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedTreeMap::new));
 
 		for (Map.Entry e: sortedRequestMap.entrySet()){
