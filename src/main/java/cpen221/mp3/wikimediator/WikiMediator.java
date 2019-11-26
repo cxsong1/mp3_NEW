@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.google.gson.internal.LinkedTreeMap;
 import cpen221.mp3.cache.Cache;
 import fastily.jwiki.core.*;
 import fastily.jwiki.dwrap.*;
@@ -155,15 +156,27 @@ public class WikiMediator {
 	 * @return the max number of search requests seen in any 30-second window
 	 */
 	public int peakLoad30s(){
-		Map<String, Long> sortedTimeMap = new HashMap<>();
+		Map<String, Long> sortedTimeMap = new TreeMap<>();
+		long first = 0;
+		long last = 0;
 
 		sortedTimeMap = this.timeMap.entrySet()
 						.stream()
 						.sorted((Map.Entry.<String, Long>comparingByValue().reversed()))
-						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedTreeMap::new));
 		List<Long> partitions = new ArrayList<>();
 
-		int numPartitions = sortedTimeMap.get()
+		first = sortedTimeMap.entrySet().iterator().next().getValue();
+		while (sortedTimeMap.entrySet().iterator().hasNext()) {
+			last = sortedTimeMap.entrySet().iterator().next().getValue();
+		}
+
+		int numPartitions = (int)(last-first)/30000;
+		int lastPart = (int) (last - numPartitions*30000);
+		if(lastPart>0){
+			numPartitions++;
+		}
+
 
 
 	}
