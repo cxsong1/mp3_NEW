@@ -162,7 +162,7 @@ public class WikiMediator {
 
 		sortedFreqMap = this.freqMap.entrySet()
 						.stream()
-						.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
+						.sorted((Map.Entry.<String, Integer>comparingByValue()))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
 
 		for(String s: sortedFreqMap.keySet()){
@@ -223,9 +223,9 @@ public class WikiMediator {
 	 * @return a List of Strings containing the links to follow to get from
 	 *         startPage to endPage
 	 */
-	List<String> getPath(String startPage, String stopPage){
-		return null;
-	}
+	//List<String> getPath(String startPage, String stopPage){
+	//	return null;
+	//}
 
 	//TODO: need to modify the spec for the specific grammar of the query
 	/**
@@ -235,7 +235,7 @@ public class WikiMediator {
 	 * @return a List of Strings containing the page titles meeting the
 	 *         requirements from query
 	 */
-	List<String> executeQuery(String query){
-		return null;
-	}
+	//List<String> executeQuery(String query){
+	//	return null;
+	//}
 }
