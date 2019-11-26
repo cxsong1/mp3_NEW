@@ -53,7 +53,12 @@ public class Tests {
 	@Test
 	public void testGetConnectedPages2() {
 		WikiMediator wikiMediator = new WikiMediator();
-		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Zona B", 2);
+		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Lunari", 1);
+
+		for (String s: connectedPageTitles){
+			System.out.println(s);
+		}
+
 		System.out.println(connectedPageTitles.size());
 
 		assertTrue(connectedPageTitles.size() > 0);
@@ -90,7 +95,7 @@ public class Tests {
 		}
 		System.out.println(summation.size());
 
-		assertEquals(7472, summation.size());
+		assertEquals(7476, summation.size());
 	}
 
 	@Test

@@ -37,12 +37,14 @@ public class WikiMediator {
 	private Wiki wiki;
 	private Map<String, Integer> freqMap;
 	private Cache cache= new Cache(256, 12*3600);
+	private Map<String, Long> requestMap;
 
 	//constructor
 	public WikiMediator(){
 		this.timeMap = new HashMap<String, Long>();
 		this.wiki = new Wiki("en.wikipedia.org");
 		this.freqMap = new HashMap<>();
+		this.requestMap = new HashMap<>();
 	}
 
 	/**
@@ -59,6 +61,7 @@ public class WikiMediator {
 			this.freqMap.put(query, 1);
 		}
 		this.timeMap.put(query, System.currentTimeMillis());
+		this.requestMap.put("simpleSearch", System.currentTimeMillis());
 		return wiki.allPages(query, false, false, limit, null);
 	}
 
@@ -66,10 +69,11 @@ public class WikiMediator {
 	 * Returns the text on a given Wikipedia page
 	 *
 	 * @param pageTitle string representing the Wikipedia page you want to find
-	 * @return String with the text on the "pageTitle" Wikipedia page
+	 * @return String with the text on the "pageTitle" Wikipedia page0o
 	 */
 	public String getPage(String pageTitle){
 		this.timeMap.put(pageTitle, System.currentTimeMillis());
+		this.requestMap.put("getPage", System.currentTimeMillis());
 		return wiki.getPageText(pageTitle);
 	}
 
@@ -105,6 +109,8 @@ public class WikiMediator {
 			}
 		}
 
+		this.requestMap.put("getConnectedPages", System.currentTimeMillis());
+
 		return connected;
 	}
 
@@ -128,6 +134,8 @@ public class WikiMediator {
 																.stream()
 																.sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
 																.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
+
+		this.requestMap.put("zeitgeist", System.currentTimeMillis());
 
 		for(String s: sortedFreqMap.keySet()){
 			if(count<limit) {
@@ -166,39 +174,46 @@ public class WikiMediator {
 				}
 			}
 		}
+
+		this.requestMap.put("Trending", System.currentTimeMillis());
+
 		return trending;
 	}
 
+
 	/**
 	 * Finds the max number of requests seen in any 30-second window
+	 * When ths user makes this request, the current peakLoad 30s will not be counted as a request.
 	 *
 	 * @return the max number of search requests seen in any 30-second window
 	 */
-	public int peakLoad30s(){
-		Map<String, Long> sortedTimeMap = new TreeMap<>();
-		long first = 0;
-		long last = 0;
 
-		sortedTimeMap = this.timeMap.entrySet()
+	public int peakLoad30s(){
+		Map<String, Long> sortedRequstMap = new TreeMap<>();
+		int requests = 0;
+
+		sortedRequstMap = this.requestMap.entrySet()
 						.stream()
 						.sorted((Map.Entry.<String, Long>comparingByValue().reversed()))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedTreeMap::new));
-		List<Long> partitions = new ArrayList<>();
 
-		first = sortedTimeMap.entrySet().iterator().next().getValue();
-		while (sortedTimeMap.entrySet().iterator().hasNext()) {
-			last = sortedTimeMap.entrySet().iterator().next().getValue();
+		for (Map.Entry e: sortedRequstMap.entrySet()){
+			Long time = (Long) e.getValue();
+			Map<String, Long> sortedEMap = sortedRequstMap.entrySet().stream()
+											.filter(e1 -> e1.getValue() > time)
+											.filter(e1 -> e1.getValue() < time + 30)
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedTreeMap::new));
+			int size = sortedEMap.size();
+			if (size > requests){
+				requests = size;
+			}
 		}
 
-		int numPartitions = (int)(last-first)/30000;
-		int lastPart = (int) (last - numPartitions*30000);
-		if(lastPart>0){
-			numPartitions++;
-		}
+		this.requestMap.put("peakLoad30s", System.currentTimeMillis());
 
-
-
+		return requests;
 	}
+
 
 	/**
 	 * Finds path of links between two Wikipedia pages
