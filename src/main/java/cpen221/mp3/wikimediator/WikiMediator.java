@@ -12,6 +12,25 @@ import javafx.util.Pair;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+/**
+ * Represents a WikiMediator that uses an API to interact with Wikipedia
+ *
+ * Abstraction Function:
+ *    AF(r) = Wikimediator w such that
+ *        timeMap maps the query to the time it was last accessed
+ *            (either by using allPages or through the cache)
+ *        freqMap maps the query to the number of times it has been accessed
+ *            (either by using allPages or through the cache)
+ *
+ *
+ * Representation Invariant:
+ *    Domain of wiki is from wikipedia.org
+ *    wiki is not null
+ *    Cache capacity and timeout are greater than 0
+ *    queries and their ids are non-null
+ *
+ */
+
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
 	private Map<String, Long> timeMap;
