@@ -3,6 +3,7 @@ package cpen221.mp3.wikimediator;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.json.JSONObject;
 
 import com.google.gson.internal.LinkedTreeMap;
 import cpen221.mp3.cache.Cache;
@@ -189,17 +190,17 @@ public class WikiMediator {
 	 */
 
 	public int peakLoad30s(){
-		Map<String, Long> sortedRequstMap = new TreeMap<>();
+		Map<String, Long> sortedRequestMap = new TreeMap<>();
 		int requests = 0;
 
-		sortedRequstMap = this.requestMap.entrySet()
+		sortedRequestMap = this.requestMap.entrySet()
 						.stream()
 						.sorted((Map.Entry.<String, Long>comparingByValue().reversed()))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedTreeMap::new));
 
-		for (Map.Entry e: sortedRequstMap.entrySet()){
+		for (Map.Entry e: sortedRequestMap.entrySet()){
 			Long time = (Long) e.getValue();
-			Map<String, Long> sortedEMap = sortedRequstMap.entrySet().stream()
+			Map<String, Long> sortedEMap = sortedRequestMap.entrySet().stream()
 											.filter(e1 -> e1.getValue() >= time)
 											.filter(e1 -> e1.getValue() <= time + 30*1000)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedTreeMap::new));
