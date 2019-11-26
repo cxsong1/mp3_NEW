@@ -3,6 +3,10 @@ package cpen221.mp3.wikimediator;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -39,6 +43,7 @@ public class WikiMediator {
 	private Map<String, Integer> freqMap;
 	private Cache cache= new Cache(256, 12*3600);
 	private Map<String, Long> requestMap;
+	private JSONArray jsonArray;
 
 	//constructor
 	public WikiMediator(){
@@ -46,6 +51,7 @@ public class WikiMediator {
 		this.wiki = new Wiki("en.wikipedia.org");
 		this.freqMap = new HashMap<>();
 		this.requestMap = new HashMap<>();
+		this.jsonArray = new JSONArray();
 	}
 
 	/**
@@ -73,9 +79,27 @@ public class WikiMediator {
 	 * @return String with the text on the "pageTitle" Wikipedia page0o
 	 */
 	public String getPage(String pageTitle){
+		JSONObject item = new JSONObject();
+		String id;
+		String text;
+
+		//Check if this page is in the cache
+		for(int i = 0; i<jsonArray.length(); i++){
+			id = jsonArray.getJSONObject(i).get("Query").toString().replaceAll(",", "");
+			if(id.equals(pageTitle)){
+				text = jsonArray.getJSONObject(i).get("Page Text").toString().replaceAll(",", "");
+				return text;
+			}
+		}
 		this.timeMap.put(pageTitle, System.currentTimeMillis());
 		this.requestMap.put("getPage", System.currentTimeMillis());
-		return wiki.getPageText(pageTitle);
+		text = wiki.getPageText(pageTitle);
+
+		item.put("id", pageTitle);
+		item.put("Page Text", text);
+		jsonArray.put(item);
+
+		return text;
 	}
 
 	/**
@@ -239,4 +263,5 @@ public class WikiMediator {
 	//List<String> executeQuery(String query){
 	//	return null;
 	//}
+
 }

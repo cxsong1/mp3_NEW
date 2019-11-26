@@ -16,7 +16,7 @@ public class Cache<T extends Cacheable> {
     public int timeout;
 
     /* TODO: Implement this datatype */
-    Map<T, Date> cache;
+    Map<T, Long> cache;
 
     /**
      * Create a cache with a fixed capacity and a timeout value.
@@ -47,7 +47,7 @@ public class Cache<T extends Cacheable> {
      */
     public boolean put(T t) {
         // TODO: implement this method
-        Date time = new Date(System.currentTimeMillis());
+        Long time = System.currentTimeMillis();
         cache.put(t, time);
         return false;
     }
@@ -78,7 +78,7 @@ public class Cache<T extends Cacheable> {
      */
     public boolean touch(String id) {
         /* TODO: Implement this method */
-        Date refresh = new Date(System.currentTimeMillis());
+        Long refresh = System.currentTimeMillis();
 
         for (T t: cache.keySet()){
             if (t.id().equals(id)){
