@@ -140,4 +140,27 @@ public class Tests {
 		assertEquals(expected, wikiMediator.trending(4));
 	}
 
+	@Test
+	public void testPeakLoad30s1(){
+		WikiMediator wikiMediator = new WikiMediator();
+
+		wikiMediator.simpleSearch("Canada", 5);
+
+		int count = wikiMediator.peakLoad30s();
+
+		assertEquals(1, count);
+	}
+
+	@Test
+	public void testPeakLoad30s2(){
+		WikiMediator wikiMediator = new WikiMediator();
+
+		wikiMediator.simpleSearch("Canada", 5);
+		wikiMediator.getPage("Joker");
+
+		int count = wikiMediator.peakLoad30s();
+
+		assertEquals(2, count);
+	}
+
 }

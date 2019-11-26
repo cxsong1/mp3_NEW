@@ -200,8 +200,8 @@ public class WikiMediator {
 		for (Map.Entry e: sortedRequstMap.entrySet()){
 			Long time = (Long) e.getValue();
 			Map<String, Long> sortedEMap = sortedRequstMap.entrySet().stream()
-											.filter(e1 -> e1.getValue() > time)
-											.filter(e1 -> e1.getValue() < time + 30)
+											.filter(e1 -> e1.getValue() >= time)
+											.filter(e1 -> e1.getValue() <= time + 30*1000)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedTreeMap::new));
 			int size = sortedEMap.size();
 			if (size > requests){
