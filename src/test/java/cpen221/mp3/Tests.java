@@ -210,7 +210,9 @@ public class Tests {
 	public void testCache(){
 		WikiMediator wikiMediator = new WikiMediator();
 
-		wikiMediator.simpleSearch()
+		wikiMediator.getPage("Canada");
+		wikiMediator.getPage("Barack Obama");
+		wikiMediator.getPage("Canada");
 	}
 
 }

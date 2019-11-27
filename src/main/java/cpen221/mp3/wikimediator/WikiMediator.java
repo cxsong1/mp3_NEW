@@ -99,6 +99,7 @@ public class WikiMediator {
 		item.put("Page Text", text);
 		jsonArray.put(item);
 		cache.put(new JSONObj(id, text));
+		System.out.println(cache);
 
 		return text;
 	}
