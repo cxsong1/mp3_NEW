@@ -80,14 +80,14 @@ public class WikiMediator {
 	 */
 	public String getPage(String pageTitle){
 		JSONObject item = new JSONObject();
-		String id;
-		String text;
+		String id = "";
+		String text = "";
 
 		//Check if this page is in the cache
 		for(int i = 0; i<jsonArray.length(); i++){
-			id = jsonArray.getJSONObject(i).get("Query").toString().replaceAll(",", "");
+			id = jsonArray.getJSONObject(i).get("id").toString();
 			if(id.equals(pageTitle)){
-				text = jsonArray.getJSONObject(i).get("Page Text").toString().replaceAll(",", "");
+				text = jsonArray.getJSONObject(i).get("Page Text").toString();
 				return text;
 			}
 		}
@@ -98,6 +98,7 @@ public class WikiMediator {
 		item.put("id", pageTitle);
 		item.put("Page Text", text);
 		jsonArray.put(item);
+		cache.put(new JSONObj(id, text));
 
 		return text;
 	}

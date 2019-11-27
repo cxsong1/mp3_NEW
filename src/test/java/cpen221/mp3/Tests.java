@@ -206,5 +206,11 @@ public class Tests {
 		assertEquals(2, count);
 	}
 
+	@Test
+	public void testCache(){
+		WikiMediator wikiMediator = new WikiMediator();
+
+		wikiMediator.simpleSearch()
+	}
 
 }
