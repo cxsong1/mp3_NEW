@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import cpen221.mp3.cache.NoSuchObjectException;
 import org.json.JSONArray;
@@ -36,9 +37,7 @@ import okhttp3.ResponseBody;
  *            to the time it was made.
  *
  *            this also contains a cache with a fixed capacity and timeout values which will
- *            save recent queries and remove stale ones. jsonArray is an array of JSONObjects
- *
- *
+ *            save recent queries and remove stale ones.
  *
  * Representation Invariant:
  *    Domain of wiki is from wikipedia.org
@@ -92,40 +91,35 @@ public class WikiMediator {
 	 */
 	public String getPage(String pageTitle){
 		JSONObject item = new JSONObject();
-		String id = "";
 		String text = "";
 
-		try{
-			cache.get(pageTitle);
-		} catch (NoSuchObjectException e) {
-			e.printStackTrace();
-		}
 		//Check if this page is in the cache
-		for(int i = 0; i<jsonArray.length(); i++){
+		for(Object o: cache.cache.keySet()) {
+			JSONObject jo = new JSONObject(o);
+			if (jo.get("id").toString().equals(pageTitle)) {
+				text = jo.get("Page text").toString();
+				return text;
+			}
+		}
+		/*for(int i = 0; i<jsonArray.length(); i++){
 			id = jsonArray.getJSONObject(i).get("id").toString();
 			if(id.equals(pageTitle)){
 				text = jsonArray.getJSONObject(i).get("Page Text").toString();
 				return text;
 			}
-		}
+		}*/
 		this.timeMap.put(pageTitle, System.currentTimeMillis());
 		this.requestMap.put("getPage", System.currentTimeMillis());
 		text = wiki.getPageText(pageTitle);
 
 		item.put("id", pageTitle);
 		item.put("Page Text", text);
-		jsonArray.put(item);
-		cache.put(new JSONObj(id, text));
+		cache.put(new JSONObj(pageTitle, text));
 		System.out.println(cache);
 
 		return text;
 	}
 
-	private boolean cacheContains(String pageTitle){
-		for( j: cache.cache.keySet()){
-			cache.get(
-		}
-	}
 
 	/**
 	 * Finds all the possible pages that can be found by following UP TO a max number
