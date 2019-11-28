@@ -95,9 +95,10 @@ public class WikiMediator {
 
 		//Check if this page is in the cache
 		for(Object o: cache.cache.keySet()) {
-			JSONObject jo = new JSONObject(o);
-			if (jo.get("id").toString().equals(pageTitle)) {
-				text = jo.get("Page text").toString();
+			boolean tf = o instanceof JSONObj;
+			JSONObj jo = (JSONObj) o;
+			if ((jo.id.equals(pageTitle))){
+				text = jo.text;
 				return text;
 			}
 		}

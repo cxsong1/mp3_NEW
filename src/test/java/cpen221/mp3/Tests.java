@@ -41,11 +41,7 @@ public class Tests {
 	public void testGetConnectedPages1() {
 		WikiMediator wikiMediator = new WikiMediator();
 		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Joker", 2);
-		/*
-		for (String s: connectedPageTitles){
-			System.out.println(s);
-		}
-		 */
+
 		System.out.println(connectedPageTitles.size());
 		assertTrue(connectedPageTitles.size() > 0);
 	}
@@ -68,11 +64,7 @@ public class Tests {
 	public void testGetConnectedPages3() {
 		WikiMediator wikiMediator = new WikiMediator();
 		List<String> connectedPageTitles = wikiMediator.getConnectedPages("Joker", 1);
-		/*
-		for (String s: connectedPageTitles){
-			System.out.println(s);
-		}
-		 */
+
 		System.out.println(connectedPageTitles.size());
 		System.out.println(connectedPageTitles);
 		assertTrue(connectedPageTitles.size() > 0);
@@ -206,14 +198,14 @@ public class Tests {
 		assertEquals(2, count);
 	}
 
+	//TODO: more extensive testing on cache
+
 	@Test
-	public void testCache(){
-		WikiMediator wikiMediator = new WikiMediator();
+	public void testGetPageCache(){
+		WikiMediator wikiMediator= new WikiMediator();
 
 		wikiMediator.getPage("Canada");
 		wikiMediator.getPage("Barack Obama");
 		wikiMediator.getPage("Canada");
 	}
-
-	//TODO: more extensive testing on cache
 }
