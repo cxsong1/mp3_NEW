@@ -47,10 +47,12 @@ public class Cache<T extends Cacheable> {
      */
     public boolean put(T t) {
         // TODO: implement this method
+        removeExpired();
         Long time = System.currentTimeMillis();
         Long[] times = {time, time};
         if (cache.size() > capacity){
             // remove least accessed
+            removeLeastRecent();
         }
         cache.put(t, times);
         return false;
@@ -64,6 +66,7 @@ public class Cache<T extends Cacheable> {
         /* TODO: change this */
         /* Do not return null. Throw a suitable checked exception when an object
             is not in the cache. */
+        removeExpired();
         for (T t: cache.keySet()){
             if (t.id().equals(id)){
                return t;
@@ -82,17 +85,17 @@ public class Cache<T extends Cacheable> {
      */
     public boolean touch(String id) {
         /* TODO: Implement this method */
+        removeExpired();
         Long refresh = System.currentTimeMillis();
 
         for (T t: cache.keySet()){
             if (t.id().equals(id)){
                 cache.remove(t);
-                Long stored = cache.get(t)[1];
-                Long[] times = {stored, refresh};
+                Long[] times = {refresh, refresh};
                 cache.put(t, times);
                 // check if successful
                 for (Map.Entry e: cache.entrySet()){
-                    if (e.getKey() == t && e.getValue() == refresh)
+                    if (e.getKey() == t && e.getValue() == times)
                         return true;
                 }
             }
@@ -111,13 +114,12 @@ public class Cache<T extends Cacheable> {
      */
     public boolean update(T t) {
         /* TODO: implement this method */
+        removeExpired();
         for (T find: cache.keySet()){
             if (t.id().equals(find.id())){
                 // do something to update t, put new t
                 // mutable, do not need to put again maybe?
                 find = t;
-                // check if it's updated, return true if so
-                return true;
             }
         }
 
@@ -131,13 +133,22 @@ public class Cache<T extends Cacheable> {
     }
 
     /**
-     * Checks for the least recently accessed object and removes it
+     * Checks for the least recently accessed object and removes it one at a time
      *
      */
     private void removeLeastRecent(){
+        T leastRecent = null;
+        double compare = 0.0;
+        Long now = System.currentTimeMillis();
         for (Map.Entry e: this.cache.entrySet()){
-
+            Long[] times = (Long[]) e.getValue();
+            Long accessedTime = times[1];
+            if ( now - accessedTime > compare ){
+                compare = accessedTime;
+                leastRecent = (T) e.getKey();
+            }
         }
+        cache.remove(leastRecent);
     }
 
     /**
@@ -145,7 +156,14 @@ public class Cache<T extends Cacheable> {
      *
      */
     private void removeExpired(){
-
+        for (Map.Entry e: this.cache.entrySet()){
+            Long[] times = (Long[]) e.getValue();
+            Long refreshedTime = times[1];
+            // timeout? DTIMEOUT?
+            if ( System.currentTimeMillis() - refreshedTime > timeout ){
+                cache.remove(e.getKey());
+            }
+        }
     }
 
 }
