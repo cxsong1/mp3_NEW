@@ -27,6 +27,12 @@ import okhttp3.ResponseBody;
  *        freqMap maps the query to the number of times it has been accessed
  *            (either by using allPages or through the cache)
  *
+ *            this is a Wikimediator with a Wiki, called wiki, being the main entry point to
+ *            the jWiki API. It contains two HashMaps; a timeMap that maps a query to the time
+ *            it was last accessed (either by using allPages or through the cache) and a freqMap
+ *            that maps the query to the number of times it has been accessed (either by using
+ *            allPages or through the cache).
+ *
  *
  * Representation Invariant:
  *    Domain of wiki is from wikipedia.org

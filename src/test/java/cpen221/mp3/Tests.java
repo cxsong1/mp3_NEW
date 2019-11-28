@@ -215,4 +215,5 @@ public class Tests {
 		wikiMediator.getPage("Canada");
 	}
 
+	//TODO: more extensive testing on cache
 }
