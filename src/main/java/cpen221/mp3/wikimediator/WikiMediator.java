@@ -23,27 +23,26 @@ import okhttp3.ResponseBody;
  * Represents a WikiMediator that uses an API to interact with Wikipedia
  *
  * Abstraction Function:
- *    AF(r) = Wikimediator w such that
- *        timeMap maps the query to the time it was last accessed
- *            (either by using allPages or through the cache)
- *        freqMap maps the query to the number of times it has been accessed
- *            (either by using allPages or through the cache)
+ *     'this' is a Wikimediator with a Wiki, called wiki, being the main entry point to
+ *     the jWiki API. It contains three HashMaps; a timeMap that maps a query to the time
+ *     it was last accessed (either by using allPages or through the cache), a freqMap
+ *     that maps the query to the number of times it has been accessed (either by using
+ *     allPages or through the cache), and a requestMap that maps the type of request
+ *     to the time it was made.
  *
- *            this is a Wikimediator with a Wiki, called wiki, being the main entry point to
- *            the jWiki API. It contains three HashMaps; a timeMap that maps a query to the time
- *            it was last accessed (either by using allPages or through the cache), a freqMap
- *            that maps the query to the number of times it has been accessed (either by using
- *            allPages or through the cache), and a requestMap that maps the type of request
- *            to the time it was made.
- *
- *            this also contains a cache with a fixed capacity and timeout values which will
- *            save recent queries and remove stale ones.
+ *     'this' also contains a cache with a fixed capacity and timeout values which will
+ *     save recent queries and remove stale ones.
  *
  * Representation Invariant:
  *    Domain of wiki is from wikipedia.org
- *    wiki is not null
+ *    timeMap, wiki, freqMap, cache, and requestMap
  *    Cache capacity and timeout are greater than 0
- *    queries and their ids are non-null
+ *    queries, frequencies, and dates accessed are non-null
+ *    query is a non-empty String
+ *    For each i in timeMap.keySet(), timeMap.get(i) > 0
+ *    For each i in freqMap.keySet(), freqMap.get(i) >= 1
+ *    Each i in requestMap.keySet() should correspond to the String
+ *        name of a method in the WikiMediator class
  *
  */
 
@@ -54,7 +53,6 @@ public class WikiMediator {
 	private Map<String, Integer> freqMap;
 	private Cache cache= new Cache(256, 12*3600);
 	private Map<String, Long> requestMap;
-	private JSONArray jsonArray;
 
 	//constructor
 	public WikiMediator(){
@@ -62,7 +60,6 @@ public class WikiMediator {
 		this.wiki = new Wiki("en.wikipedia.org");
 		this.freqMap = new HashMap<>();
 		this.requestMap = new HashMap<>();
-		this.jsonArray = new JSONArray();
 	}
 
 	/**
@@ -113,9 +110,8 @@ public class WikiMediator {
 		this.requestMap.put("getPage", System.currentTimeMillis());
 		text = wiki.getPageText(pageTitle);
 
-		item.put("id", pageTitle);
-		item.put("Page Text", text);
 		cache.put(new JSONObj(pageTitle, text));
+		//cache.cache.put(new JSONObj(pageTitle, text), text);
 		System.out.println(cache);
 
 		return text;
@@ -257,6 +253,10 @@ public class WikiMediator {
 		this.requestMap.put("peakLoad30s", System.currentTimeMillis());
 
 		return requests;
+	}
+
+	public Map<JSONObj, long[]> cacheMap(){
+		return new HashMap<JSONObj, long[]>((Map<? extends JSONObj, ? extends long[]>) cache);
 	}
 
 
