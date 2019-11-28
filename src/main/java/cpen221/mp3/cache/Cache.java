@@ -15,7 +15,8 @@ public class Cache<T extends Cacheable> {
     public static final int DTIMEOUT = 3600;
     public int timeout;
 
-    /* TODO: when removing items from the cache, remove from jsonArray too if possible*/
+    /* TODO: Implement this datatype */
+    public Map<T, Long[]> cache;
 
     /**
      * Create a cache with a fixed capacity and a timeout value.
@@ -47,7 +48,11 @@ public class Cache<T extends Cacheable> {
     public boolean put(T t) {
         // TODO: implement this method
         Long time = System.currentTimeMillis();
-        cache.put(t, time);
+        Long[] times = {time, time};
+        if (cache.size() > capacity){
+            // remove least accessed
+        }
+        cache.put(t, times);
         return false;
     }
 
@@ -82,7 +87,9 @@ public class Cache<T extends Cacheable> {
         for (T t: cache.keySet()){
             if (t.id().equals(id)){
                 cache.remove(t);
-                cache.put(t, refresh);
+                Long stored = cache.get(t)[1];
+                Long[] times = {stored, refresh};
+                cache.put(t, times);
                 // check if successful
                 for (Map.Entry e: cache.entrySet()){
                     if (e.getKey() == t && e.getValue() == refresh)
@@ -121,6 +128,24 @@ public class Cache<T extends Cacheable> {
         }
 
         return false;
+    }
+
+    /**
+     * Checks for the least recently accessed object and removes it
+     *
+     */
+    private void removeLeastRecent(){
+        for (Map.Entry e: this.cache.entrySet()){
+
+        }
+    }
+
+    /**
+     * Checks for the objects stored before 12 hours and removes them
+     *
+     */
+    private void removeExpired(){
+
     }
 
 }
