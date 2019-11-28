@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import cpen221.mp3.cache.NoSuchObjectException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -28,10 +29,15 @@ import okhttp3.ResponseBody;
  *            (either by using allPages or through the cache)
  *
  *            this is a Wikimediator with a Wiki, called wiki, being the main entry point to
- *            the jWiki API. It contains two HashMaps; a timeMap that maps a query to the time
- *            it was last accessed (either by using allPages or through the cache) and a freqMap
+ *            the jWiki API. It contains three HashMaps; a timeMap that maps a query to the time
+ *            it was last accessed (either by using allPages or through the cache), a freqMap
  *            that maps the query to the number of times it has been accessed (either by using
- *            allPages or through the cache).
+ *            allPages or through the cache), and a requestMap that maps the type of request
+ *            to the time it was made.
+ *
+ *            this also contains a cache with a fixed capacity and timeout values which will
+ *            save recent queries and remove stale ones. jsonArray is an array of JSONObjects
+ *
  *
  *
  * Representation Invariant:
@@ -89,6 +95,11 @@ public class WikiMediator {
 		String id = "";
 		String text = "";
 
+		try{
+			cache.get(pageTitle);
+		} catch (NoSuchObjectException e) {
+			e.printStackTrace();
+		}
 		//Check if this page is in the cache
 		for(int i = 0; i<jsonArray.length(); i++){
 			id = jsonArray.getJSONObject(i).get("id").toString();
@@ -108,6 +119,12 @@ public class WikiMediator {
 		System.out.println(cache);
 
 		return text;
+	}
+
+	private boolean cacheContains(String pageTitle){
+		for( j: cache.cache.keySet()){
+			cache.get(
+		}
 	}
 
 	/**

@@ -15,8 +15,7 @@ public class Cache<T extends Cacheable> {
     public static final int DTIMEOUT = 3600;
     public int timeout;
 
-    /* TODO: Implement this datatype */
-    Map<T, Long> cache;
+    /* TODO: when removing items from the cache, remove from jsonArray too if possible*/
 
     /**
      * Create a cache with a fixed capacity and a timeout value.
