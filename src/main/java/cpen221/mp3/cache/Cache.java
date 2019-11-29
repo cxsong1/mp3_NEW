@@ -5,6 +5,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implements a cache which stores recently accessed objects so it can be accessed faster in the future.
+ *
+ * Abstraction Function:
+ *      cache is a HashMap mapping a generic object to the time it was last accessed. It has a capacity and
+ *      timeout value which determine, respectively, the maximum number of items that can be stored in the cache at
+ *      once and after how long an item must either be updated or removed.
+ *
+ * Representation Invariant:
+ *
+ */
 public class Cache<T extends Cacheable> {
 
     /* the default cache size is 32 objects */
