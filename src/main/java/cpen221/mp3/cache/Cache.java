@@ -14,6 +14,9 @@ import java.util.Map;
  *      once and after how long an item must either be updated or removed.
  *
  * Representation Invariant:
+ *      capacity and timeout values are greater than 0
+ *      cache is not null and does not contain any null key-value sets
+ *      for each o in cache.keySet(), cache.get(o)>0
  *
  */
 public class Cache<T extends Cacheable> {

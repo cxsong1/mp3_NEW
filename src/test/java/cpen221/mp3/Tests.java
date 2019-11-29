@@ -200,14 +200,12 @@ public class Tests {
 
 	//TODO: more extensive testing on cache
 
-	//This test was mostly used to step through the code to ensure it was working as expected
+	//This test was used to step through the code to ensure it is working as expected
 	@Test
 	public void testGetPageCache(){
 		WikiMediator wikiMediator= new WikiMediator();
-		String text;
-		text = wikiMediator.getPage("Canada");
+		wikiMediator.getPage("Canada");
 		wikiMediator.getPage("Barack Obama");
-		String text2 = wikiMediator.getPage("Canada");
-		assertEquals(text,text2);
+		wikiMediator.getPage("Canada");
 	}
 }

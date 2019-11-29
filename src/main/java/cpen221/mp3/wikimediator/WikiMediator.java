@@ -87,25 +87,15 @@ public class WikiMediator {
 	 * @return String with the text on the "pageTitle" Wikipedia page0o
 	 */
 	public String getPage(String pageTitle){
-		JSONObject item = new JSONObject();
 		String text = "";
-
 		//Check if this page is in the cache
 		for(Object o: cache.cache.keySet()) {
-			boolean tf = o instanceof JSONObj;
 			JSONObj jo = (JSONObj) o;
-			if ((jo.id.equals(pageTitle))){
-				text = jo.text;
+			if((jo.item.get("id").toString()).equals(pageTitle)){
+				text = (jo.item.get("Page Text")).toString();
 				return text;
 			}
 		}
-		/*for(int i = 0; i<jsonArray.length(); i++){
-			id = jsonArray.getJSONObject(i).get("id").toString();
-			if(id.equals(pageTitle)){
-				text = jsonArray.getJSONObject(i).get("Page Text").toString();
-				return text;
-			}
-		}*/
 		this.timeMap.put(pageTitle, System.currentTimeMillis());
 		this.requestMap.put("getPage", System.currentTimeMillis());
 		text = wiki.getPageText(pageTitle);
@@ -116,7 +106,6 @@ public class WikiMediator {
 
 		return text;
 	}
-
 
 	/**
 	 * Finds all the possible pages that can be found by following UP TO a max number
