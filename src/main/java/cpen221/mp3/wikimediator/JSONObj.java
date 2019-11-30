@@ -5,9 +5,9 @@ import org.json.JSONObject;
 
 /**
  * Abstraction Function:
- *    item is a JSONObject containing a String id representing the title of the Wikipedia page
- *    and a String containing all the text that is contained in the Wikipedia page with the
- *    title of 'id'
+ *    item is a JSONObject that implements the interface Cacheable,
+ *    it takes a wikipedia page, and store the title of the wikipedia page as a String id,
+ *    and store the full text of the wikipedia page in a String pageText
  *
  * Representation Invariant:
  *    item is not null

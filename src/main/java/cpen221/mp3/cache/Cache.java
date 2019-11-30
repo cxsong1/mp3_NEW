@@ -1,7 +1,5 @@
 package cpen221.mp3.cache;
 
-import javax.lang.model.element.Element;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,9 +7,10 @@ import java.util.Map;
  * Implements a cache which stores recently accessed objects so it can be accessed faster in the future.
  *
  * Abstraction Function:
- *      cache is a HashMap mapping a generic object to the time it was last accessed. It has a capacity and
+ *      Cache is a HashMap mapping a generic object that extends the interface Cacheable
+ *      to an array that takes the time that it was stored/ refreshed and last accessed. It has a capacity and
  *      timeout value which determine, respectively, the maximum number of items that can be stored in the cache at
- *      once and after how long an item must either be updated or removed.
+ *      once and after how long an item must be removed.
  *
  * Representation Invariant:
  *      capacity and timeout values are greater than 0
@@ -58,6 +57,7 @@ public class Cache<T extends Cacheable> {
      * Add a value to the cache.
      * If the cache is full then remove the least recently accessed object to
      * make room for the new object.
+     * If the value is already in the cache, touch?
      */
     public boolean put(T t) {
         // TODO: implement this method
@@ -69,6 +69,12 @@ public class Cache<T extends Cacheable> {
             removeLeastRecent();
         }
         cache.put(t, times);
+
+        for (Map.Entry e: cache.entrySet()){
+            if (e.getKey() == t && e.getValue() == times)
+                return true;
+        }
+
         return false;
     }
 
@@ -138,7 +144,7 @@ public class Cache<T extends Cacheable> {
         }
 
         for (T find: cache.keySet()){
-            if (t.id().equals(find.id())){
+            if (t.equals(find)){
                 return true;
             }
         }
@@ -147,6 +153,7 @@ public class Cache<T extends Cacheable> {
     }
 
     /**
+     * When cache exceeds capacity, and expired items are already removed,
      * Checks for the least recently accessed object and removes it one at a time
      *
      */
@@ -166,16 +173,17 @@ public class Cache<T extends Cacheable> {
     }
 
     /**
-     * Checks for the objects stored before 12 hours and removes them
+     * Removes the items stored at time more than a timeout value away from current time
      *
      */
     private void removeExpired(){
         for (Map.Entry e: this.cache.entrySet()){
             Long[] times = (Long[]) e.getValue();
-            Long refreshedTime = times[1];
+            Long storedTime = times[0];
             // timeout? DTIMEOUT?
-            if ( System.currentTimeMillis() - refreshedTime > timeout ){
-                cache.remove(e.getKey());
+            if ( System.currentTimeMillis() - storedTime > timeout ){
+                // can we call remove on entry?
+                cache.remove(e);
             }
         }
     }

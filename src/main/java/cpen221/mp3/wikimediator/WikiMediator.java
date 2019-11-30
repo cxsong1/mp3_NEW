@@ -25,13 +25,13 @@ import okhttp3.ResponseBody;
  * Abstraction Function:
  *     'this' is a Wikimediator with a Wiki, called wiki, being the main entry point to
  *     the jWiki API. It contains three HashMaps; a timeMap that maps a query to the time
- *     it was last accessed (either by using allPages or through the cache), a freqMap
+ *     it was last accessed (either by using simpleSearch or through the cache), a freqMap
  *     that maps the query to the number of times it has been accessed (either by using
- *     allPages or through the cache), and a requestMap that maps the type of request
- *     to the time it was made.
+ *     simpleSearch or through the cache), and a requestMap that maps the String of the type of request
+ *     to the time the request was made.
  *
  *     'this' also contains a cache with a fixed capacity and timeout values which will
- *     save recent queries and remove stale ones.
+ *     save the title and page text searched by method getPage, stale items will be removed as appropriate.
  *
  * Representation Invariant:
  *    Domain of wiki is from wikipedia.org
@@ -48,11 +48,11 @@ import okhttp3.ResponseBody;
 
 public class WikiMediator {
 	//map that will be used in the zeitgeist, trending and peakLoad30s
-	private Map<String, Long> timeMap;
 	private Wiki wiki;
+	private Map<String, Long> timeMap;
 	private Map<String, Integer> freqMap;
-	private Cache cache= new Cache(256, 12*3600);
 	private Map<String, Long> requestMap;
+	private Cache cache= new Cache(256, 12*3600);
 
 	//constructor
 	public WikiMediator(){
@@ -82,6 +82,9 @@ public class WikiMediator {
 
 	/**
 	 * Returns the text on a given Wikipedia page
+	 * and store the text and title to cache,
+	 * if cache already contains the title being searched,
+	 * access it from the cache.
 	 *
 	 * @param pageTitle string representing the Wikipedia page you want to find
 	 * @return String with the text on the "pageTitle" Wikipedia page0o
@@ -102,7 +105,7 @@ public class WikiMediator {
 
 		cache.put(new JSONObj(pageTitle, text));
 		//cache.cache.put(new JSONObj(pageTitle, text), text);
-		System.out.println(cache);
+		//System.out.println(cache);
 
 		return text;
 	}
@@ -145,8 +148,9 @@ public class WikiMediator {
 	}
 
 		/**
-		 * Returns the most common page titles searched for in non-increasing order. If multiple Strings were
-		 * searched the same number of times, they can be organized in any arbitrary order
+		 * Returns the most common page titles searched for (using simpleSearch) in non-increasing order.
+		 * If multiple Strings were searched the same number of times,
+		 * they can be organized in any arbitrary order
 		 * TODO: fix this (ie. order by time searched)
 		 *
 		 * @param limit max number of requests returned
@@ -179,7 +183,7 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Finds and sorts the most search frequent requests made in the last 30secs
+	 * Finds and sorts the most search frequent requests (in simple search) made in the last 30secs
 	 *
 	 * @param limit max number of elements returned in the List
 	 * @return a List of Strings containing the most common searched titles in the
@@ -244,6 +248,11 @@ public class WikiMediator {
 		return requests;
 	}
 
+	/**
+	 * This method is made public for the test to access our cache
+	 *
+	 * @return A new instance of cache
+	 */
 	public Map<JSONObj, long[]> cacheMap(){
 		return new HashMap<JSONObj, long[]>((Map<? extends JSONObj, ? extends long[]>) cache);
 	}
