@@ -25,9 +25,9 @@ import okhttp3.ResponseBody;
  * Abstraction Function:
  *     'this' is a Wikimediator with a Wiki, called wiki, being the main entry point to
  *     the jWiki API. It contains three HashMaps; a timeMap that maps a query to the time
- *     it was last accessed (either by using simpleSearch or through the cache), a freqMap
+ *     it was last accessed (either by using simpleSearch/getPage or through the cache), a freqMap
  *     that maps the query to the number of times it has been accessed (either by using
- *     simpleSearch or through the cache), and a requestMap that maps the String of the type of request
+ *     simpleSearch/getPage or through the cache), and a requestMap that maps the String of the type of request
  *     to the time the request was made.
  *
  *     'this' also contains a cache with a fixed capacity and timeout values which will
@@ -92,6 +92,13 @@ public class WikiMediator {
 	public String getPage(String pageTitle){
 		String text = "";
 		//Check if this page is in the cache
+
+		if(this.freqMap.containsKey(pageTitle)){
+			this.freqMap.put(pageTitle, this.freqMap.get(pageTitle)+1);
+		}else {
+			this.freqMap.put(pageTitle, 1);
+		}
+
 		for(Object o: cache.cache.keySet()) {
 			JSONObj jo = (JSONObj) o;
 			if((jo.item.get("id").toString()).equals(pageTitle)){
@@ -148,7 +155,7 @@ public class WikiMediator {
 	}
 
 		/**
-		 * Returns the most common page titles searched for (using simpleSearch) in non-increasing order.
+		 * Returns the most common page titles searched for (using simpleSearch or getPage) in non-increasing order.
 		 * If multiple Strings were searched the same number of times,
 		 * they can be organized in any arbitrary order
 		 * TODO: fix this (ie. order by time searched)
@@ -183,7 +190,7 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Finds and sorts the most search frequent requests (in simple search) made in the last 30secs
+	 * Finds and sorts the most search frequent requests (using simple search or getPage) made in the last 30secs
 	 *
 	 * @param limit max number of elements returned in the List
 	 * @return a List of Strings containing the most common searched titles in the
