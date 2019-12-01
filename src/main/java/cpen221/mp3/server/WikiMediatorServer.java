@@ -27,10 +27,9 @@ import java.net.Socket;
  *      request should also include the type of request (ie. task to perform) and any
  *          other appropriate arguments
 *       response should also include a status indicating whether or not a task was
- *          completed succesfully and the return value
+ *          completed successfully and the return value
  *
  */
-
 
 public class WikiMediatorServer {
 

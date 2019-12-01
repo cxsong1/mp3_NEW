@@ -19,6 +19,7 @@ dependencies {
     compile group: 'fastily', name: 'jwiki', version: '1.7.0'
     compile 'org.kordamp.ikonli:ikonli-javafx:11.3.4'
     compile group: 'org.json', name:'json', version: '20190722'
+    compile "org.antlr:antlr4-intellij-adaptor:0.1"
 }
 
 javafx{
