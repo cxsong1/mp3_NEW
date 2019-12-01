@@ -30,6 +30,8 @@ import okhttp3.ResponseBody;
  *     that maps the query to the number of times it has been accessed (either by using
  *     simpleSearch/getPage or through the cache), and a requestMap that maps the String of the type of request
  *     to the time the request was made.
+ *     Graph takes the names of all the page titles on wikipedia as vertices and
+ *     all the path as directed edges.
  *
  *     'this' also contains a cache with a fixed capacity and timeout values which will
  *     save the title and page text searched by method getPage, stale items will be removed as appropriate.
@@ -54,6 +56,7 @@ public class WikiMediator {
 	private Map<String, Integer> freqMap;
 	private Map<String, Long> requestMap;
 	private Cache cache= new Cache(256, 12*3600);
+	private Graph graph = new Graph();
 
 	//constructor
 	public WikiMediator(){
