@@ -55,15 +55,17 @@ public class WikiMediator {
 	private Map<String, Long> timeMap;
 	private Map<String, Integer> freqMap;
 	private Map<String, Long> requestMap;
-	private Cache cache= new Cache(256, 12*3600);
-	private Graph graph = new Graph();
+	private Cache cache;
+	private Graph graph;
 
 	//constructor
 	public WikiMediator(){
-		this.timeMap = new HashMap<String, Long>();
-		this.wiki = new Wiki("en.wikipedia.org");
-		this.freqMap = new HashMap<>();
-		this.requestMap = new HashMap<>();
+		timeMap = new HashMap<String, Long>();
+		wiki = new Wiki("en.wikipedia.org");
+		freqMap = new HashMap<>();
+		requestMap = new HashMap<>();
+		cache = new Cache(256, 12*3600);
+		graph = new Graph();
 	}
 
 	/**
@@ -267,9 +269,9 @@ public class WikiMediator {
 	 * @return a List of Strings containing the links to follow to get from
 	 *         startPage to endPage
 	 */
-	//List<String> getPath(String startPage, String stopPage){
-	//	return null;
-	//}
+	List<String> getPath(String startPage, String stopPage){
+		return null;
+	}
 
 	//TODO: need to modify the spec for the specific grammar of the query
 	/**
@@ -279,8 +281,8 @@ public class WikiMediator {
 	 * @return a List of Strings containing the page titles meeting the
 	 *         requirements from query
 	 */
-	//List<String> executeQuery(String query){
-	//	return null;
-	//}
+	List<String> executeQuery(String query){
+		return null;
+	}
 
 }

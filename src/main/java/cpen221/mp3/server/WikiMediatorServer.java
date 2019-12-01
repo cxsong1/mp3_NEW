@@ -1,6 +1,7 @@
 package cpen221.mp3.server;
 
 import cpen221.mp3.wikimediator.WikiMediator;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -8,17 +9,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Represents a Server that executes methods the class WikiMediator
+ * Represents a Server that receives requests over a network socket for tasks
+ *      implemented in WikiMediator, then returns results appropriately
  *
  * Abstraction Function:
- * WIKIMEDIATOR_PORT represents the default port number of the server
- * WIKIMEDIATOR_N represents the number of clients the server can listen to at the same time
- * serverScocket is the socket the server will use to handle input and output streams
+ *      WIKIMEDIATOR_PORT represents the default port number of the server
+ *      WIKIMEDIATOR_N represents the number of clients the server can listen to at the same time
+ *      serverSocket is the socket the server will use to handle input and output streams
+ *      request is a JSON string with the task that is to be performed through the server
+ *      reponse is a JSON string that returns the result of performing the requested task
  *
  * Representation Invariant:
- * WIKIMEDIATOR_N > 0
- * 1 < WIKIMEDIATOR_PORT < 65535
- * serverSocket != null
+ *      WIKIMEDIATOR_N > 0
+ *      1 < WIKIMEDIATOR_PORT < 65535
+ *      serverSocket != null
+ *      request and response are both non-null and contain an 'id'
+ *      request should also include the type of request (ie. task to perform) and any
+ *          other appropriate arguments
+*       response should also include a status indicating whether or not a task was
+ *          completed succesfully and the return value
  *
  */
 
@@ -27,7 +36,8 @@ public class WikiMediatorServer {
 
     public static final int WIKIMEDIATOR_PORT = 4949;
     public static final int WIKIMEDIATOR_N = 1;
-    // Rep invariant: serverSocket != null
+    private JSONObject request;
+    private JSONObject response;
     private ServerSocket serverSocket;
 
     /**
@@ -41,6 +51,8 @@ public class WikiMediatorServer {
     public WikiMediatorServer(int port, int n) throws IOException {
         /* TODO: Implement this method */
         serverSocket = new ServerSocket(port);
+        request = new JSONObject();
+        response = new JSONObject();
     }
 
     /**
