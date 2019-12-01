@@ -7,6 +7,22 @@ import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * Represents a Server that executes methods the class WikiMediator
+ *
+ * Abstraction Function:
+ * WIKIMEDIATOR_PORT represents the default port number of the server
+ * WIKIMEDIATOR_N represents the number of clients the server can listen to at the same time
+ * serverScocket is the socket the server will use to handle input and output streams
+ *
+ * Representation Invariant:
+ * WIKIMEDIATOR_N > 0
+ * 1 < WIKIMEDIATOR_PORT < 65535
+ * serverSocket != null
+ *
+ */
+
+
 public class WikiMediatorServer {
 
     public static final int WIKIMEDIATOR_PORT = 4949;
