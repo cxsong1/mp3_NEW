@@ -256,16 +256,6 @@ public class WikiMediator {
 	}
 
 	/**
-	 * This method is made public for the test to access our cache
-	 *
-	 * @return A new instance of cache
-	 */
-	public Map<JSONObj, long[]> cacheMap(){
-		return new HashMap<JSONObj, long[]>((Map<? extends JSONObj, ? extends long[]>) cache);
-	}
-
-
-	/**
 	 * Finds path of links between two Wikipedia pages
 	 *
 	 * @param startPage String name of Wikipedia page at which to start
