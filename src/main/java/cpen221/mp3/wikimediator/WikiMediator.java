@@ -278,9 +278,10 @@ public class WikiMediator {
 	 * Finds a list of pages that meet the structured query from the user
 	 *
 	 * @param query String representing the structured query
-	 *              can include: QUERY, CONDITION, SIMPLE_CONDITION, ITEM
+	 *           can include: QUERY, CONDITION, SIMPLE_CONDITION, ITEM and must
+	 *           abide by the grammar rules
 	 * @return a List of Strings containing the page titles meeting the
-	 *         requirements from query
+	 *         requirements specified in the query
 	 * @throws InvalidQueryException if a query is invalid (ie. cannot be parsed)
 	 *          Note: this is yet to be implemented
 	 */
