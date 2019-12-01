@@ -6,14 +6,13 @@ import java.util.*;
  * Represents a graph with vertices of type V.
  *
  * Abstraction function:
- *      Represents an undirected, weighted graph consisting of verticies and optional
+ *      Represents a directed, unweighted graph consisting of verticies and optional
  *      edges between them. A Graph may contain seperate graphs that are not connected
  *      by any edges.
  *
  * Representation invariant:
  *      The vertex and edge lists do not contain any duplicates.
- *      All edges have positive or zero weights.
- *      Verticies are all indexed differently.
+ *      Verticies all have different names
  *      eList contains all edges in the graph
  *      vList contains all verticies in the graph
  *

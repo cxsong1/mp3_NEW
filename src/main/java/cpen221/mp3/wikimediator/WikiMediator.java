@@ -24,7 +24,8 @@ import okhttp3.ResponseBody;
  *
  * Abstraction Function:
  *     'this' is a Wikimediator with a Wiki, called wiki, being the main entry point to
- *     the jWiki API. It contains three HashMaps; a timeMap that maps a query to the time
+ *     the jWiki API. It contains three HashMaps;
+ *     a timeMap that maps a query to the time
  *     it was last accessed (either by using simpleSearch/getPage or through the cache), a freqMap
  *     that maps the query to the number of times it has been accessed (either by using
  *     simpleSearch/getPage or through the cache), and a requestMap that maps the String of the type of request
