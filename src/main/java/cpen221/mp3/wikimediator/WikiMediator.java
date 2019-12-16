@@ -55,17 +55,15 @@ public class WikiMediator {
 	private Map<String, Long> timeMap;
 	private Map<String, Integer> freqMap;
 	private Map<String, Long> requestMap;
-	private Cache cache;
-	private Graph graph;
+	private Cache cache= new Cache(256, 12*3600);
+	private Graph graph = new Graph();
 
 	//constructor
 	public WikiMediator(){
-		timeMap = new HashMap<String, Long>();
-		wiki = new Wiki("en.wikipedia.org");
-		freqMap = new HashMap<>();
-		requestMap = new HashMap<>();
-		cache = new Cache(256, 12*3600);
-		graph = new Graph();
+		this.timeMap = new HashMap<String, Long>();
+		this.wiki = new Wiki("en.wikipedia.org");
+		this.freqMap = new HashMap<>();
+		this.requestMap = new HashMap<>();
 	}
 
 	/**
@@ -269,24 +267,20 @@ public class WikiMediator {
 	 * @return a List of Strings containing the links to follow to get from
 	 *         startPage to endPage
 	 */
-	List<String> getPath(String startPage, String stopPage){
-		return null;
-	}
+	//List<String> getPath(String startPage, String stopPage){
+	//	return null;
+	//}
 
 	//TODO: need to modify the spec for the specific grammar of the query
 	/**
 	 * Finds a list of pages that meet the structured query from the user
 	 *
-	 * @param query String representing the structured query
-	 *           can include: QUERY, CONDITION, SIMPLE_CONDITION, ITEM and must
-	 *           abide by the grammar rules
+	 * @param query String representing the structured query.....
 	 * @return a List of Strings containing the page titles meeting the
-	 *         requirements specified in the query
-	 * @throws InvalidQueryException if a query is invalid (ie. cannot be parsed)
-	 *          Note: this is yet to be implemented
+	 *         requirements from query
 	 */
-	List<String> executeQuery(String query) {
-		return null;
-	}
+	//List<String> executeQuery(String query){
+	//	return null;
+	//}
 
 }

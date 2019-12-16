@@ -2,11 +2,10 @@ package cpen221.mp3.server;
 
 import cpen221.mp3.wikimediator.WikiMediator;
 import org.json.JSONObject;
-
 import java.io.*;
-import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 /**
  * Represents a Server that receives requests over a network socket for tasks
@@ -14,10 +13,9 @@ import java.net.Socket;
  *
  * Abstraction Function:
  *      WIKIMEDIATOR_PORT represents the default port number of the server
- *      WIKIMEDIATOR_N represents the number of clients the server can listen to at the same time
  *      serverSocket is the socket the server will use to handle input and output streams
- *      request is a JSON string with the task that is to be performed through the server
- *      reponse is a JSON string that returns the result of performing the requested task
+ *      request is a JSON object with the task that is to be performed through the server
+ *      response is a JSON object that returns the result of performing the requested task
  *
  * Representation Invariant:
  *      WIKIMEDIATOR_N > 0
@@ -26,7 +24,7 @@ import java.net.Socket;
  *      request and response are both non-null and contain an 'id'
  *      request should also include the type of request (ie. task to perform) and any
  *          other appropriate arguments
-*       response should also include a status indicating whether or not a task was
+ *       response should also include a status indicating whether or not a task was
  *          completed successfully and the return value
  *
  */
@@ -34,9 +32,6 @@ import java.net.Socket;
 public class WikiMediatorServer {
 
     public static final int WIKIMEDIATOR_PORT = 4949;
-    public static final int WIKIMEDIATOR_N = 1;
-    private JSONObject request;
-    private JSONObject response;
     private ServerSocket serverSocket;
 
     /**
@@ -45,13 +40,9 @@ public class WikiMediatorServer {
      *
      * @param port the port number to bind the server to
      *             port number, requires 0 <= port <= 65535
-     * @param n    the number of concurrent requests the server can handle
      */
-    public WikiMediatorServer(int port, int n) throws IOException {
-        /* TODO: Implement this method */
+    public WikiMediatorServer(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        request = new JSONObject();
-        response = new JSONObject();
     }
 
     /**
@@ -62,17 +53,38 @@ public class WikiMediatorServer {
     public void serve() throws IOException {
         while (true) {
             // block until a client connects
-            Socket socket = serverSocket.accept();
-            try {
-                handle(socket);
-            } catch (IOException ioe) {
-                ioe.printStackTrace(); // but don't terminate serve()
-            } finally {
-                socket.close();
-            }
+            final Socket socket = serverSocket.accept();
+            // create a new thread to handle that client
+            Thread handler = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        try {
+                            handle(socket);
+                        } finally {
+                            socket.close();
+                        }
+                    } catch (IOException ioe) {
+                        // this exception wouldn't terminate serve(),
+                        // since we're now on a different thread, but
+                        // we still need to handle it
+                        ioe.printStackTrace();
+                    }
+                }
+            });
+            // start the thread
+            handler.start();
         }
     }
 
+    /**
+     * Handle one client connection. Returns when client disconnects.
+     *
+     * @param socket
+     *            socket where client is connected
+     * @throws IOException
+     *             if connection encounters an error
+     * reference: https://stackoverflow.com/questions/22461663/convert-inputstream-to-jsonobject
+     */
     private void handle(Socket socket) throws IOException {
         System.err.println("client connected");
 
@@ -80,34 +92,40 @@ public class WikiMediatorServer {
         // that convert it from a byte stream to a character stream,
         // and that buffer it so that we can read a line at a time
         BufferedReader in = new BufferedReader(new InputStreamReader(
-                socket.getInputStream()));
+               socket.getInputStream()));
+        String line = "";
 
-        // similarly, wrap character=>bytestream converter around the
+        StringBuilder responseStrBuilder = new StringBuilder();
+        while((line =  in.readLine()) != null){
+            responseStrBuilder.append(line);
+            System.err.println("request: " + line);
+        }
+
+        JSONObject x = new JSONObject(responseStrBuilder.toString());
+
+        // similarly, wrap character=>byte stream converter around the
         // socket output stream, and wrap a PrintWriter around that so
         // that we have more convenient ways to write Java primitive
         // types to it.
         PrintWriter out = new PrintWriter(new OutputStreamWriter(
-                socket.getOutputStream()));
+                socket.getOutputStream()), true);
 
         try {
-            // each request is a single line containing a number
-            for (String line = in.readLine(); line != null; line = in
-                    .readLine()) {
-                System.err.println("request: " + line);
+            // each request is a JSONObject containing id, type, etc
+            // not a single line
                 try {
-                    String x = String.valueOf(line);
                     // compute answer and send back to client
-                    String y = new WikiMediator().getPage(x);
+                    JSONObject y = process(x);
                     System.err.println("reply: " + y);
-                    out.print(y + "\n");
+                    out.println(y);
                 } catch (NumberFormatException e) {
                     // complain about ill-formatted request
                     System.err.println("reply: err");
-                    out.println("err");
+                    out.print("err\n");
                 }
-                // important! flush our buffer so the reply is sent
-                out.flush();
-            }
+                // important! our PrintWriter is auto-flushing, but if it were
+                // not:
+                // out.flush();
         } finally {
             out.close();
             in.close();
@@ -115,11 +133,35 @@ public class WikiMediatorServer {
     }
 
     /**
+     * Parse the request,
+     * get response from WikiMediator and
+     * add a response field to the JSONObject
+     * This method currently accept one JSONObject,
+     * can be modified later to accept JSONArray
+     *
+     * @param n
+     *            indicates the request passed
+     * @return A new JSONObject with response field
+     */
+    public JSONObject process(JSONObject n) {
+        JSONObject result = new JSONObject(n);
+        String type = n.getString("type").substring(1).replaceAll(",", "");
+        if (type.equals("simpleSearch")){
+            String query = n.getString("query").substring(1).replaceAll(",", "");
+            int limit = n.optInt("limit");
+            WikiMediator process = new WikiMediator();
+            List<String> response = process.simpleSearch(query, limit);
+            result.put("response", response);
+        }
+        return result;
+    }
+
+    /**
      * Start a WikiMediatorServer running on the default port.
      */
     public static void main(String[] args) {
         try {
-            WikiMediatorServer server = new WikiMediatorServer(WIKIMEDIATOR_PORT, WIKIMEDIATOR_N);
+            WikiMediatorServer server = new WikiMediatorServer(WIKIMEDIATOR_PORT);
             server.serve();
         } catch (IOException e) {
             e.printStackTrace();
