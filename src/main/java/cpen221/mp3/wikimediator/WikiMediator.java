@@ -132,21 +132,19 @@ public class WikiMediator {
 
 	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
 	public List<String> getConnectedPages(String pageTitle, int hops){
-		List<String> connected = new ArrayList<>();
-		List<String> visited = new ArrayList<>();
+		Set<String> visited = new HashSet<>();
 		Queue<Pair<String, Integer>> queue = new LinkedList<>();
 		queue.add(new Pair<>(pageTitle, 0));
 
 		while (queue.size() > 0){
 			Pair parent = queue.poll();
-			if ((int)parent.getValue() < hops && !visited.contains((String) parent.getKey())){
+			if ( !visited.contains((String) parent.getKey())){
 				String title = (String) parent.getKey();
 				visited.add(title);
-				List<String> neighbours = wiki.getLinksOnPage(title);
-				int level = (int) parent.getValue() + 1;
-				for (String s: neighbours){
-					if (!connected.contains(s)){
-						connected.add(s);
+				if ((int)parent.getValue() < hops) {
+					List<String> neighbours = wiki.getLinksOnPage(title);
+					int level = (int) parent.getValue() + 1;
+					for (String s : neighbours) {
 						queue.add(new Pair<>(s, level));
 					}
 				}
@@ -155,7 +153,7 @@ public class WikiMediator {
 
 		this.requestMap.put("getConnectedPages", System.currentTimeMillis());
 
-		return connected;
+		return new ArrayList<String>(visited);
 	}
 
 		/**

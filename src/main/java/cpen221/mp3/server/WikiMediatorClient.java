@@ -1,9 +1,7 @@
 package cpen221.mp3.server;
-import cpen221.mp3.wikimediator.WikiMediator;
-import netscape.javascript.JSObject;
+import org.json.JSONObject;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.Socket;
 
 /**
@@ -37,8 +35,9 @@ public class WikiMediatorClient {
      * @throws IOException if network or server failure
      */
 
-    public void sendRequest(JSObject x) throws IOException {
-        out.print(x + "\n");
+    public void sendRequest(JSONObject x) throws IOException {
+        System.out.println("request is sent");
+        out.print(x + "\n" + "\n");
         out.flush(); // important! make sure x actually gets sent
     }
 
@@ -49,13 +48,28 @@ public class WikiMediatorClient {
      * @throws IOException if network or server failure
      */
 
-    public BigInteger getReply() throws IOException {
-        String reply = in.readLine();
-        if (reply == null) {
+    public JSONObject getReply() throws IOException {
+        System.out.println("fetching reply...");
+        String line = "";
+
+        StringBuilder responseStrBuilder = new StringBuilder();
+
+        while((line = in.readLine()) != null){
+            responseStrBuilder.append(line);
+            System.out.println("reading something");
+            System.err.println("request: " + line);
+        }
+
+        JSONObject reply = new JSONObject(responseStrBuilder.toString());
+
+        System.out.println(reply);
+
+        if (reply.get("response") == null) {
             throw new IOException("connection terminated unexpectedly");
         }
         try {
-            return new BigInteger(reply);
+            //return new JSONObject(reply);
+            return reply;
         } catch (NumberFormatException nfe) {
             throw new IOException("misformatted reply: " + reply);
         }
@@ -67,10 +81,9 @@ public class WikiMediatorClient {
      * @throws IOException if close fails
      */
     public void close() throws IOException { in.close();
-    out.close();
-    socket.close();
+        out.close();
+        socket.close();
     }
-    private static final int N = 100;
 
     /**
      * Use a WikiMediatorServer to find the requested result
@@ -79,18 +92,18 @@ public class WikiMediatorClient {
         try {
             WikiMediatorClient client = new WikiMediatorClient("localhost", WikiMediatorServer.WIKIMEDIATOR_PORT);
 
-            // send the requests to find the first N Fibonacci numbers
-            for (int x = 1; x <= N; ++x) {
-           //     client.sendRequest(x);
-                // parsing the request and print it
-                System.out.println("request ("+x+") = ?");
-            }
+            JSONObject x = new JSONObject();
+            x.put("id", 1);
+            x.put("type", "simpleSearch");
+            x.put("query", "Disney");
+            x.put("limit", 5);
 
-            // collect the replies
-            for (int x = 1; x <= N; ++x) {
-                BigInteger y = client.getReply();
-                System.out.println("fibonacci("+x+") = "+y);
-            }
+            client.sendRequest(x);
+            System.out.println("request ("+x+") = ?");
+
+            JSONObject y = client.getReply();
+            System.out.println(y);
+            //System.out.println("response("+x+") = "+y.get("response"));
 
             client.close();
         } catch (IOException ioe) {

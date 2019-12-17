@@ -2,6 +2,7 @@ package cpen221.mp3.server;
 
 import cpen221.mp3.wikimediator.WikiMediator;
 import org.json.JSONObject;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -53,6 +54,8 @@ public class WikiMediatorServer {
     public void serve() throws IOException {
         while (true) {
             // block until a client connects
+
+            System.out.println("serving...");
             final Socket socket = serverSocket.accept();
             // create a new thread to handle that client
             Thread handler = new Thread(new Runnable() {
@@ -96,7 +99,8 @@ public class WikiMediatorServer {
         String line = "";
 
         StringBuilder responseStrBuilder = new StringBuilder();
-        while((line =  in.readLine()) != null){
+
+        while(!(line =  in.readLine()).equals("")){
             responseStrBuilder.append(line);
             System.err.println("request: " + line);
         }
@@ -133,21 +137,20 @@ public class WikiMediatorServer {
     }
 
     /**
-     * Parse the request,
-     * get response from WikiMediator and
+     * Parse the request, get response from WikiMediator and
      * add a response field to the JSONObject
      * This method currently accept one JSONObject,
      * can be modified later to accept JSONArray
      *
-     * @param n
-     *            indicates the request passed
+     * @param n indicates the request passed
      * @return A new JSONObject with response field
      */
     public JSONObject process(JSONObject n) {
+        System.out.println("processing...");
         JSONObject result = new JSONObject(n);
-        String type = n.getString("type").substring(1).replaceAll(",", "");
+        String type = n.getString("type").replaceAll(",", "");
         if (type.equals("simpleSearch")){
-            String query = n.getString("query").substring(1).replaceAll(",", "");
+            String query = n.getString("query").replaceAll(",", "");
             int limit = n.optInt("limit");
             WikiMediator process = new WikiMediator();
             List<String> response = process.simpleSearch(query, limit);
