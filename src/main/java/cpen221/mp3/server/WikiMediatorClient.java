@@ -56,13 +56,10 @@ public class WikiMediatorClient {
 
         while((line = in.readLine()) != null){
             responseStrBuilder.append(line);
-            System.out.println("reading something");
-            System.err.println("request: " + line);
+            System.err.println("reply: " + line);
         }
 
         JSONObject reply = new JSONObject(responseStrBuilder.toString());
-
-        System.out.println(reply);
 
         if (reply.get("response") == null) {
             throw new IOException("connection terminated unexpectedly");
@@ -96,10 +93,10 @@ public class WikiMediatorClient {
             x.put("id", 1);
             x.put("type", "simpleSearch");
             x.put("query", "Disney");
-            x.put("limit", 5);
+            x.put("limit", 3);
 
             client.sendRequest(x);
-            System.out.println("request ("+x+") = ?");
+            System.out.println("request: ("+x+") ");
 
             JSONObject y = client.getReply();
             System.out.println(y);
