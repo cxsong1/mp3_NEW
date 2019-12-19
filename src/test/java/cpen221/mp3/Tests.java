@@ -17,6 +17,12 @@ import static org.junit.Assert.assertTrue;
 public class Tests {
 
 	@Test
+	public void simpleSearchTest0(){
+		WikiMediator myMediator = new WikiMediator();
+		Assert.assertEquals(new ArrayList<String>(), myMediator.simpleSearch("Sathish", 0));
+	}
+
+	@Test
 	public void zeitgeistTest(){
 		List<String> results;
 		WikiMediator myMediator = new WikiMediator();

@@ -81,6 +81,9 @@ public class WikiMediator {
 		}
 		this.timeMap.put(query, System.currentTimeMillis());
 		this.requestMap.put("simpleSearch", System.currentTimeMillis());
+		if(limit == 0) {
+			return new ArrayList<String>();
+		}
 		return wiki.allPages(query, false, false, limit, null);
 	}
 
