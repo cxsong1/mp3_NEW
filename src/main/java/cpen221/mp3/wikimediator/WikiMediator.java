@@ -266,38 +266,66 @@ public class WikiMediator {
 	 * @param startPage String name of Wikipedia page at which to start
 	 * @param stopPage String name of the Wikipedia page we want to end on
 	 * @return a List of Strings containing the links to follow to get from
-	 *         startPage to endPage
+	 *         startPage to endPage (including both the start and end pages)
 	 */
 	public List<String> getPath(String startPage, String stopPage){
 		List<String> path = new ArrayList<>();
 		Set<String> visited = new HashSet<>();
+
 		List<Pair<String, String>> tracing = new ArrayList<>();
+		List<String> tracingKeys = new ArrayList<>();
 		tracing.add(new Pair<>(startPage, "0"));
+
 		Pair<String, String> trace = new Pair<>("","");
 		Queue<Pair<String, String>> queue = new LinkedList<>();
 		queue.add(new Pair<>(startPage, "0"));
 		boolean found = false;
 
-		while (queue.size() > 0 && !found){
+		while (queue.size() > 0 && !found){ //starting size is 1
 			String parent = queue.poll().getKey();
 			if ( !visited.contains(parent)){
 				visited.add(parent);
+				System.out.println("getting links for: " + parent);
 				List<String> neighbours = wiki.getLinksOnPage(parent);
 				for (String s : neighbours) {
 					if (s.equals(stopPage)){
 						found = true;
-			            trace = new Pair<>(s, parent);
+						trace = new Pair<>(s, parent);
 					}
 					queue.add(new Pair<>(s, parent));
 					tracing.add(new Pair<>(s, parent));
+					tracingKeys.add(s);
 				}
 			}
 		}
 
+		String currParent = tracing.get(tracing.size()-1).getValue();
+		if (currParent != "0") {
+			path.add(currParent);
+		}
+		//System.out.println("Last element in tracing: " + currParent);
+
+		while(currParent != "0"){
+			int i = tracingKeys.indexOf(currParent);
+			if(i == -1){
+				System.out.println(currParent + " link not found");
+			}
+			currParent = tracing.get(i).getValue();
+			//System.out.println("next currParent: " + currParent);
+			if(currParent=="0")
+				break;
+			path.add(currParent);
+		}
+
+		path.add(startPage);
+		Collections.reverse(path);
+		path.add(stopPage);
+		return path;
+
 		// from the dist, trace back
 		// get key until key == "0"
 
-		for (Pair<String, String> p: tracing){
+		/*for (Pair<String, String> p: tracing){
 			if (trace.getValue().equals("0")){
 				Collections.reverse(path);
 				path.add(stopPage);
@@ -307,9 +335,7 @@ public class WikiMediator {
 				path.add((String) p.getKey());
 				trace = p;
 			}
-		}
-
-		return null;
+		}*/
 	}
 
 	//TODO: need to modify the spec for the specific grammar of the query

@@ -250,4 +250,52 @@ public class Tests {
 		assertTrue(path.size() > 0);
 	}
 
+	@Test
+	public void getPath2() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> path = wikiMediator.getPath("Piazza (web service)", "Internet forum");
+
+		List<String> expectedPath = new ArrayList<>();
+		expectedPath.add("Piazza (web service)");
+		expectedPath.add("Internet forum");
+
+		assertEquals(expectedPath, path);
+		assertTrue(path.size() == 2);
+	}
+
+	@Test
+	public void getPath3() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> path = wikiMediator.getPath("Piazza (web service)", "32-bit");
+
+		List<String> expectedPath = new ArrayList<>();
+		expectedPath.add("Piazza (web service)");
+		expectedPath.add("Android (operating system)");
+		expectedPath.add("32-bit");
+
+		assertEquals(expectedPath, path);
+		assertTrue(path.size() == 3);
+	}
+
+	@Test
+	public void getPath4() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> path = wikiMediator.getPath("Piazza (web service)", "Community");
+
+		List<String> expectedPath = new ArrayList<>();
+		expectedPath.add("Piazza (web service)");
+		expectedPath.add("Android (operating system)");
+		expectedPath.add("Community of practice");
+		expectedPath.add("Community");
+
+		assertEquals(expectedPath, path);
+		assertTrue(path.size() == 4);
+	}
+
+	@Test
+	public void testGetLinks(){
+		Wiki wiki = new Wiki("en.wikipedia.org");
+		System.out.println(wiki.getLinksOnPage("Android (operating system)"));
+	}
+
 }

@@ -37,13 +37,13 @@ public class WikiMediatorClient {
 
     public void sendRequest(JSONObject x) throws IOException {
         System.out.println("request is sent");
-        out.print(x + "\n" + "\n");
-        out.flush(); // important! make sure x actually gets sent
+        this.out.print(x + "\n" + "\n");
+        this.out.flush(); // important! make sure x actually gets sent
     }
 
     /**
      * Get a reply from the next request that was submitted.
-     * Requires this is "open".
+     * Requires that "this" is open.
      * @return requested result as a JSONObject
      * @throws IOException if network or server failure
      */
@@ -54,7 +54,7 @@ public class WikiMediatorClient {
 
         StringBuilder responseStrBuilder = new StringBuilder();
 
-        while((line = in.readLine()) != null){
+        while((line = this.in.readLine()) != null){
             responseStrBuilder.append(line);
             System.err.println("reply: " + line);
         }
