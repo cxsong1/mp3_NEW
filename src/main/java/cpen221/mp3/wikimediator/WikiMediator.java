@@ -269,6 +269,7 @@ public class WikiMediator {
 		List<String> path = new ArrayList<>();
 		Set<String> visited = new HashSet<>();
 		List<Pair<String, String>> tracing = new ArrayList<>();
+		tracing.add(new Pair<>(startPage, "0"));
 		Pair<String, String> trace = new Pair<>("","");
 		Queue<Pair<String, String>> queue = new LinkedList<>();
 		queue.add(new Pair<>(startPage, "0"));
@@ -296,6 +297,7 @@ public class WikiMediator {
 		for (Pair<String, String> p: tracing){
 			if (trace.getValue().equals("0")){
 				Collections.reverse(path);
+				path.add(stopPage);
 				return path;
 			}
 			else if (p.getKey().equals(trace.getValue())){
