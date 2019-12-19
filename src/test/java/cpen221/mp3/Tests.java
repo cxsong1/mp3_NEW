@@ -232,4 +232,16 @@ public class Tests {
 		Assert.assertEquals(true, testDefault.put(Francis1));
 	}
 
+	@Test
+	public void getPath() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> path = wikiMediator.getPath("Satish", "Satish K. Agnihotri");
+
+		for (String s: path){
+			System.out.println(s);
+		}
+
+		assertTrue(path.size() > 0);
+	}
+
 }

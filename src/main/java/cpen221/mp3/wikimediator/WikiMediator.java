@@ -265,9 +265,47 @@ public class WikiMediator {
 	 * @return a List of Strings containing the links to follow to get from
 	 *         startPage to endPage
 	 */
-	//List<String> getPath(String startPage, String stopPage){
-	//	return null;
-	//}
+	public List<String> getPath(String startPage, String stopPage){
+		List<String> path = new ArrayList<>();
+		Set<String> visited = new HashSet<>();
+		List<Pair<String, String>> tracing = new ArrayList<>();
+		Pair<String, String> trace = new Pair<>("","");
+		Queue<Pair<String, String>> queue = new LinkedList<>();
+		queue.add(new Pair<>(startPage, "0"));
+		boolean found = false;
+
+		while (queue.size() > 0 && !found){
+			String parent = queue.poll().getKey();
+			if ( !visited.contains(parent)){
+				visited.add(parent);
+				List<String> neighbours = wiki.getLinksOnPage(parent);
+				for (String s : neighbours) {
+					if (s.equals(stopPage)){
+						found = true;
+			            trace = new Pair<>(s, parent);
+					}
+					queue.add(new Pair<>(s, parent));
+					tracing.add(new Pair<>(s, parent));
+				}
+			}
+		}
+
+		// from the dist, trace back
+		// get key until key == "0"
+
+		for (Pair<String, String> p: tracing){
+			if (trace.getValue().equals("0")){
+				Collections.reverse(path);
+				return path;
+			}
+			else if (p.getKey().equals(trace.getValue())){
+				path.add((String) p.getKey());
+				trace = p;
+			}
+		}
+
+		return null;
+	}
 
 	//TODO: need to modify the spec for the specific grammar of the query
 	/**
