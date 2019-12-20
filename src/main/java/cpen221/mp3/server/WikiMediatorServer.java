@@ -147,15 +147,50 @@ public class WikiMediatorServer {
      */
     public JSONObject process(JSONObject n) {
         System.out.println("processing...");
+        // new object does not contain queries, fix this
         JSONObject result = new JSONObject(n);
         String type = n.getString("type").replaceAll(",", "");
+
+        // how about a switch statement
         if (type.equals("simpleSearch")){
             String query = n.getString("query").replaceAll(",", "");
             int limit = n.optInt("limit");
+            // creates a new mediator each time, can we improve this?
             WikiMediator process = new WikiMediator();
             List<String> response = process.simpleSearch(query, limit);
             result.put("response", response);
         }
+        else if (type.equals("getPage")){
+            String query = n.getString("query").replaceAll(",", "");
+            WikiMediator process = new WikiMediator();
+            String response = process.getPage(query);
+            result.put("response", response);
+        }
+        else if (type.equals("getConnectedPages")){
+            String query = n.getString("query").replaceAll(",", "");
+            int hops = n.optInt("hops");
+            WikiMediator process = new WikiMediator();
+            List<String> response = process.getConnectedPages(query, hops);
+            result.put("response", response);
+        }
+        else if (type.equals("zeitgeist")){
+            int limit = n.optInt("limit");
+            WikiMediator process = new WikiMediator();
+            List<String> response = process.zeitgeist(limit);
+            result.put("response", response);
+        }
+        else if (type.equals("trending")){
+            int limit = n.optInt("limit");
+            WikiMediator process = new WikiMediator();
+            List<String> response = process.trending(limit);
+            result.put("response", response);
+        }
+        else if (type.equals("peakLoad30s")){
+            WikiMediator process = new WikiMediator();
+            int response = process.peakLoad30s();
+            result.put("response", response);
+        }
+
         return result;
     }
 
