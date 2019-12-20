@@ -17,6 +17,12 @@ import static org.junit.Assert.assertTrue;
 public class Tests {
 
 	@Test
+	public void simpleSearchTest0(){
+		WikiMediator myMediator = new WikiMediator();
+		Assert.assertEquals(new ArrayList<String>(), myMediator.simpleSearch("Sathish", 0));
+	}
+
+	@Test
 	public void zeitgeistTest(){
 		List<String> results;
 		WikiMediator myMediator = new WikiMediator();
@@ -233,15 +239,51 @@ public class Tests {
 	}
 
 	@Test
-	public void getPath() {
+	public void getPath2() {
 		WikiMediator wikiMediator = new WikiMediator();
-		List<String> path = wikiMediator.getPath("Satish", "Satish K. Agnihotri");
+		List<String> path = wikiMediator.getPath("Sathish", "Sivakarthikeyan");
 
-		for (String s: path){
-			System.out.println(s);
-		}
+		List<String> expectedPath = new ArrayList<>();
+		expectedPath.add("Sathish");
+		expectedPath.add("Sivakarthikeyan");
 
-		assertTrue(path.size() > 0);
+		assertEquals(expectedPath, path);
+		assertTrue(path.size() == 2);
+	}
+
+	@Test
+	public void getPath3() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> path = wikiMediator.getPath("Piazza (web service)", "32-bit");
+
+		List<String> expectedPath = new ArrayList<>();
+		expectedPath.add("Piazza (web service)");
+		expectedPath.add("Android (operating system)");
+		expectedPath.add("32-bit");
+
+		assertEquals(expectedPath, path);
+		assertTrue(path.size() == 3);
+	}
+
+	@Test
+	public void getPath4() {
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> path = wikiMediator.getPath("Piazza (web service)", "Community");
+
+		List<String> expectedPath = new ArrayList<>();
+		expectedPath.add("Piazza (web service)");
+		expectedPath.add("Android (operating system)");
+		expectedPath.add("Community of practice");
+		expectedPath.add("Community");
+
+		assertEquals(expectedPath, path);
+		assertTrue(path.size() == 4);
+	}
+
+	@Test
+	public void testGetLinks(){
+		Wiki wiki = new Wiki("en.wikipedia.org");
+		System.out.println(wiki.getLinksOnPage("Android (operating system)"));
 	}
 
 }

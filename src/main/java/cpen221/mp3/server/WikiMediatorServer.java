@@ -93,7 +93,7 @@ public class WikiMediatorServer {
 
         // get the socket's input stream, and wrap converters around it
         // that convert it from a byte stream to a character stream,
-        // and that buffer it so that we can read a line at a time
+        // and that buffer it so that we can read one line at a time
         BufferedReader in = new BufferedReader(new InputStreamReader(
                socket.getInputStream()));
         String line = "";
