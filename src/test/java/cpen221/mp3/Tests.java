@@ -239,25 +239,13 @@ public class Tests {
 	}
 
 	@Test
-	public void getPath() {
-		WikiMediator wikiMediator = new WikiMediator();
-		List<String> path = wikiMediator.getPath("Satish", "Satish K. Agnihotri");
-
-		for (String s: path){
-			System.out.println(s);
-		}
-
-		assertTrue(path.size() > 0);
-	}
-
-	@Test
 	public void getPath2() {
 		WikiMediator wikiMediator = new WikiMediator();
-		List<String> path = wikiMediator.getPath("Piazza (web service)", "Internet forum");
+		List<String> path = wikiMediator.getPath("Sathish", "Sivakarthikeyan");
 
 		List<String> expectedPath = new ArrayList<>();
-		expectedPath.add("Piazza (web service)");
-		expectedPath.add("Internet forum");
+		expectedPath.add("Sathish");
+		expectedPath.add("Sivakarthikeyan");
 
 		assertEquals(expectedPath, path);
 		assertTrue(path.size() == 2);

@@ -1,6 +1,7 @@
 package cpen221.mp3.wikimediator;
 
 import java.lang.reflect.Array;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -275,8 +276,8 @@ public class WikiMediator {
 		List<Pair<String, String>> tracing = new ArrayList<>();
 		List<String> tracingKeys = new ArrayList<>();
 		tracing.add(new Pair<>(startPage, "0"));
+		tracingKeys.add(startPage);
 
-		Pair<String, String> trace = new Pair<>("","");
 		Queue<Pair<String, String>> queue = new LinkedList<>();
 		queue.add(new Pair<>(startPage, "0"));
 		boolean found = false;
@@ -290,7 +291,6 @@ public class WikiMediator {
 				for (String s : neighbours) {
 					if (s.equals(stopPage)){
 						found = true;
-						trace = new Pair<>(s, parent);
 					}
 					queue.add(new Pair<>(s, parent));
 					tracing.add(new Pair<>(s, parent));
@@ -298,44 +298,22 @@ public class WikiMediator {
 				}
 			}
 		}
-
 		String currParent = tracing.get(tracing.size()-1).getValue();
 		if (currParent != "0") {
 			path.add(currParent);
 		}
-		//System.out.println("Last element in tracing: " + currParent);
 
 		while(currParent != "0"){
 			int i = tracingKeys.indexOf(currParent);
-			if(i == -1){
-				System.out.println(currParent + " link not found");
-			}
 			currParent = tracing.get(i).getValue();
-			//System.out.println("next currParent: " + currParent);
 			if(currParent=="0")
 				break;
 			path.add(currParent);
 		}
 
-		path.add(startPage);
 		Collections.reverse(path);
 		path.add(stopPage);
 		return path;
-
-		// from the dist, trace back
-		// get key until key == "0"
-
-		/*for (Pair<String, String> p: tracing){
-			if (trace.getValue().equals("0")){
-				Collections.reverse(path);
-				path.add(stopPage);
-				return path;
-			}
-			else if (p.getKey().equals(trace.getValue())){
-				path.add((String) p.getKey());
-				trace = p;
-			}
-		}*/
 	}
 
 	//TODO: need to modify the spec for the specific grammar of the query
