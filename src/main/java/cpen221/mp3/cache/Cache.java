@@ -56,7 +56,8 @@ public class Cache<T extends Cacheable> {
      * Add a value to the cache.
      * If the cache is full then remove the least recently accessed object to
      * make room for the new object.
-     * If the value is already in the cache, touch?
+     * @param t object to be put in the cache
+     * @return true if object is successfully added to the cache and false if the value is already in the cache
      */
     public boolean put(T t) {
         // TODO: implement this method

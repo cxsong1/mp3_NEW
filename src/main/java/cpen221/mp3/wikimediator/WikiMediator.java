@@ -51,13 +51,11 @@ import okhttp3.ResponseBody;
  */
 
 public class WikiMediator {
-	//map that will be used in the zeitgeist, trending and peakLoad30s
 	private Wiki wiki;
 	private Map<String, Long> timeMap;
 	private Map<String, Integer> freqMap;
 	private Map<String, Long> requestMap;
-	private Cache cache= new Cache(256, 12*3600);
-	private Graph graph = new Graph();
+	private Cache cache;
 
 	//constructor
 	public WikiMediator(){
@@ -65,6 +63,7 @@ public class WikiMediator {
 		this.wiki = new Wiki("en.wikipedia.org");
 		this.freqMap = new HashMap<>();
 		this.requestMap = new HashMap<>();
+		this.cache = new Cache(256, 12*3600);
 	}
 
 	/**
@@ -97,9 +96,8 @@ public class WikiMediator {
 	 * @param pageTitle string representing the Wikipedia page you want to find
 	 * @return String with the text on the "pageTitle" Wikipedia page0o
 	 */
-	public String getPage(String pageTitle){
+	public String getPage(String pageTitle) throws NoSuchObjectException {
 		String text = "";
-		//Check if this page is in the cache
 
 		if(this.freqMap.containsKey(pageTitle)){
 			this.freqMap.put(pageTitle, this.freqMap.get(pageTitle)+1);
@@ -107,21 +105,28 @@ public class WikiMediator {
 			this.freqMap.put(pageTitle, 1);
 		}
 
-		for(Object o: cache.cache.keySet()) {
+		//check if item already in cache
+		/*for(Object o: cache.cache.keySet()) {
 			JSONObj jo = (JSONObj) o;
 			if((jo.item.get("id").toString()).equals(pageTitle)){
 				text = (jo.item.get("Page Text")).toString();
 				return text;
 			}
+		}*/
+
+		try {
+			Object obj = cache.get(pageTitle);
+			JSONObj jo = (JSONObj) obj;
+			text = (jo.item.get("Page Text")).toString();
+			return text;
 		}
-		this.timeMap.put(pageTitle, System.currentTimeMillis());
-		this.requestMap.put("getPage", System.currentTimeMillis());
-		text = wiki.getPageText(pageTitle);
+		catch (NoSuchObjectException e) {
+			this.timeMap.put(pageTitle, System.currentTimeMillis());
+			this.requestMap.put("getPage", System.currentTimeMillis());
+			text = wiki.getPageText(pageTitle);
 
-		cache.put(new JSONObj(pageTitle, text));
-		//cache.cache.put(new JSONObj(pageTitle, text), text);
-		//System.out.println(cache);
-
+			cache.put(new JSONObj(pageTitle, text));
+		}
 		return text;
 	}
 
