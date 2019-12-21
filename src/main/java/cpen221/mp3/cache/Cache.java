@@ -60,22 +60,19 @@ public class Cache<T extends Cacheable> {
      * @return true if object is successfully added to the cache and false if the value is already in the cache
      */
     public boolean put(T t) {
-        // TODO: implement this method
         removeExpired();
         Long time = System.currentTimeMillis();
         Long[] times = {time, time};
-        if (cache.size() > capacity){
+        if (cache.size() >= capacity){
             // remove least accessed
             removeLeastRecent();
         }
-        cache.put(t, times);
-
         for (Map.Entry e: cache.entrySet()){
-            if (e.getKey() == t && e.getValue() == times)
-                return true;
+            if (e.getKey() == t)
+                return false;
         }
-
-        return false;
+	    cache.put(t, times);
+	    return true;
     }
 
     /**

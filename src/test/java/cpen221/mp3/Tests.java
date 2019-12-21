@@ -24,6 +24,19 @@ public class Tests {
 	}
 
 	@Test
+	public void cachePutTest(){
+		Cache cache = new Cache(3, 12*3600);
+		Francis f1 = new Francis();
+		Francis f2 = new Francis();
+		Francis f3 = new Francis();
+
+		cache.put(f1);
+		cache.put(f2);
+		Assert.assertTrue(cache.put(f3));
+		Assert.assertFalse(cache.put(f3));
+	}
+
+	@Test
 	public void zeitgeistTest(){
 		List<String> results;
 		WikiMediator myMediator = new WikiMediator();
@@ -222,21 +235,6 @@ public class Tests {
 		wikiMediator.getPage("Canada");
 		wikiMediator.getPage("Barack Obama");
 		wikiMediator.getPage("Canada");
-	}
-
-	//TODO: more extensive testing on cache
-
-	@Test
-	public void testPut(){
-		Cache testDefault = new Cache();
-		Francis Francis1 = new Francis("Francis1");
-		testDefault.put(Francis1);
-
-		System.out.println(testDefault.cache.size());
-		System.out.println(testDefault.capacity);
-        System.out.println(testDefault.timeout);
-
-		Assert.assertEquals(true, testDefault.put(Francis1));
 	}
 
 	@Test

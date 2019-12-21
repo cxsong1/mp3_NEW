@@ -105,15 +105,6 @@ public class WikiMediator {
 			this.freqMap.put(pageTitle, 1);
 		}
 
-		//check if item already in cache
-		/*for(Object o: cache.cache.keySet()) {
-			JSONObj jo = (JSONObj) o;
-			if((jo.item.get("id").toString()).equals(pageTitle)){
-				text = (jo.item.get("Page Text")).toString();
-				return text;
-			}
-		}*/
-
 		try {
 			Object obj = cache.get(pageTitle);
 			JSONObj jo = (JSONObj) obj;
