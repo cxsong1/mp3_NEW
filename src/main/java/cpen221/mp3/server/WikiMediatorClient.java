@@ -62,10 +62,12 @@ public class WikiMediatorClient {
         JSONObject reply = new JSONObject(responseStrBuilder.toString());
 
         if (reply.get("response") == null) {
-            throw new IOException("connection terminated unexpectedly");
+            reply.put("status", "failed");
+            //throw new IOException("connection terminated unexpectedly");
         }
         try {
             //return new JSONObject(reply);
+            reply.put("status", "success");
             return reply;
         } catch (NumberFormatException nfe) {
             throw new IOException("misformatted reply: " + reply);
@@ -95,12 +97,22 @@ public class WikiMediatorClient {
             x.put("query", "Disney");
             x.put("limit", 3);
 
+            JSONObject x1 = new JSONObject();
+            x.put("id", 2);
+            x.put("type", "zeitgeist");
+
             client.sendRequest(x);
+            System.out.println("request: ("+x+") ");
+
+            client.sendRequest(x1);
             System.out.println("request: ("+x+") ");
 
             JSONObject y = client.getReply();
             System.out.println(y);
             //System.out.println("response("+x+") = "+y.get("response"));
+
+            JSONObject y1 = client.getReply();
+            System.out.println(y1);
 
             client.close();
         } catch (IOException ioe) {

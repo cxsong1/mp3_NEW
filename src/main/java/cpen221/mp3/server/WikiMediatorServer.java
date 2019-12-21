@@ -1,5 +1,6 @@
 package cpen221.mp3.server;
 
+import cpen221.mp3.cache.NoSuchObjectException;
 import cpen221.mp3.wikimediator.WikiMediator;
 import org.json.JSONObject;
 
@@ -33,6 +34,8 @@ import java.util.List;
 public class WikiMediatorServer {
 
     public static final int WIKIMEDIATOR_PORT = 4949;
+    public static final int WIKIMEDIATOR_N = 1;
+    public int number;
     private ServerSocket serverSocket;
 
     /**
@@ -42,8 +45,9 @@ public class WikiMediatorServer {
      * @param port the port number to bind the server to
      *             port number, requires 0 <= port <= 65535
      */
-    public WikiMediatorServer(int port) throws IOException {
+    public WikiMediatorServer(int port, int n) throws IOException {
         serverSocket = new ServerSocket(port);
+        this.number = n;
     }
 
     /**
@@ -122,7 +126,7 @@ public class WikiMediatorServer {
                     JSONObject y = process(x);
                     System.err.println("reply: " + y);
                     out.println(y);
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | NoSuchObjectException e) {
                     // complain about ill-formatted request
                     System.err.println("reply: err");
                     out.print("err\n");
@@ -145,13 +149,16 @@ public class WikiMediatorServer {
      * @param n indicates the request passed
      * @return A new JSONObject with response field
      */
-    public JSONObject process(JSONObject n) {
+    public JSONObject process(JSONObject n) throws NoSuchObjectException {
         System.out.println("processing...");
-        // new object does not contain queries, fix this
-        JSONObject result = new JSONObject(n);
+        // new object does not contain id, fix this
+        //JSONObject result = new JSONObject(n, JSONObject.getNames(n));
+        JSONObject result = new JSONObject();
+        //result.put("id", n.get("id"));
+        int id = n.optInt("id");
+        result.put("id", id);
         String type = n.getString("type").replaceAll(",", "");
 
-        // how about a switch statement
         if (type.equals("simpleSearch")){
             String query = n.getString("query").replaceAll(",", "");
             int limit = n.optInt("limit");
@@ -199,12 +206,10 @@ public class WikiMediatorServer {
      */
     public static void main(String[] args) {
         try {
-            WikiMediatorServer server = new WikiMediatorServer(WIKIMEDIATOR_PORT);
+            WikiMediatorServer server = new WikiMediatorServer(WIKIMEDIATOR_PORT, WIKIMEDIATOR_N);
             server.serve();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-
-
