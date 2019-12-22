@@ -98,21 +98,18 @@ public class WikiMediatorClient {
             x.put("limit", 3);
 
             JSONObject x1 = new JSONObject();
-            x.put("id", 2);
-            x.put("type", "zeitgeist");
+            x1.put("id", 2);
+            x1.put("type", "zeitgeist");
 
             client.sendRequest(x);
             System.out.println("request: ("+x+") ");
 
             client.sendRequest(x1);
-            System.out.println("request: ("+x+") ");
+            System.out.println("request: ("+x1+") ");
 
             JSONObject y = client.getReply();
             System.out.println(y);
             //System.out.println("response("+x+") = "+y.get("response"));
-
-            JSONObject y1 = client.getReply();
-            System.out.println(y1);
 
             client.close();
         } catch (IOException ioe) {
