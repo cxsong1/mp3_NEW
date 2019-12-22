@@ -322,7 +322,7 @@ public class Tests {
 	@Test
 	public void getPathTimeout(){
 		WikiMediator wikiMediator = new WikiMediator();
-		List<String> path = wikiMediator.getPath("Sathish", "Korean War");
+		List<String> path = wikiMediator.getPath("Sathish", "Sausage");
 
 		assertEquals(new ArrayList(), path);
 	}

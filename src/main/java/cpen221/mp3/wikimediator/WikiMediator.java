@@ -59,7 +59,7 @@ public class WikiMediator {
 	 *
 	 * @param query String to search for
 	 * @param limit max number of elements (ie. search results) returned
-	 * @return a List of Strings containing the page titles that match the query string
+	 * @return a List of Strings of the page titles that match the query string
 	 */
 	public List<String> simpleSearch(String query, int limit) {
 		if(this.freqMap.containsKey(query)){
@@ -76,13 +76,12 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Returns the text on a given Wikipedia page
-	 * and store the text and title to cache,
-	 * if cache already contains the title being searched,
-	 * access it from the cache.
+	 * Returns the text on a given Wikipedia page by either:
+	 *    accessing it from the cache if it has recently been searched for OR
+	 *    searching it up on Wikipedia then storing the title and text to the cache
 	 *
 	 * @param pageTitle string representing the Wikipedia page you want to find
-	 * @return String with the text on the "pageTitle" Wikipedia page0o
+	 * @return String with the text on the "pageTitle" Wikipedia page
 	 */
 	public String getPage(String pageTitle) throws NoSuchObjectException {
 		String text = "";
@@ -110,7 +109,7 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Finds all the possible pages that can be found by following UP TO a max number
+	 * Finds all the possible pages that can be found by following up to a max number
 	 *    of links from a specified starting point
 	 *
 	 * @param pageTitle String name of the starting Wikipedia page
@@ -118,7 +117,6 @@ public class WikiMediator {
 	 * @return a List of Strings that can be reached by following a maximum of hops links from pageTitle
 	 */
 
-	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
 	public List<String> getConnectedPages(String pageTitle, int hops){
 		Set<String> visited = new HashSet<>();
 		Queue<Pair<String, Integer>> queue = new LinkedList<>();
@@ -150,12 +148,12 @@ public class WikiMediator {
 		 * they can be organized in any arbitrary order
 		 * TODO: fix this (ie. order by time searched)
 		 *
-		 * @param limit max number of requests returned
-		 * @return a List of Strings containing the most common searched titles,
+		 * @param limit max number of titles returned
+		 * @return a List of Strings containing the most commonly searched titles,
 		 *         up to a max number, in non-increasing order
 		 */
 	public List<String> zeitgeist(int limit){
-		Map<String, Integer> sortedFreqMap = new HashMap<>();
+		Map<String, Integer> sortedFreqMap;
 		int count = 0;
 		List<String> mostCommon = new ArrayList<>();
 
@@ -180,7 +178,7 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Finds and sorts the most search frequent requests (using simple search or getPage) made in the last 30secs
+	 * Finds and sorts the most frequent search requests (using simple search or getPage) made in the last 30secs
 	 *
 	 * @param limit max number of elements returned in the List
 	 * @return a List of Strings containing the most common searched titles in the
@@ -214,7 +212,7 @@ public class WikiMediator {
 
 	/**
 	 * Finds the max number of requests seen in any 30-second window
-	 * When ths user makes this request, the current peakLoad 30s will not be counted as a request.
+	 * The current call to peakLoad30s will not be counted as a request.
 	 *
 	 * @return the max number of search requests seen in any 30-second window
 	 */
@@ -249,9 +247,11 @@ public class WikiMediator {
 	 * Finds path of links between two Wikipedia pages
 	 *
 	 * @param startPage String name of Wikipedia page at which to start
-	 * @param stopPage String name of the Wikipedia page we want to end on
+	 * @param stopPage String name of the Wikipedia page at which to end
 	 * @return a List of Strings containing the links to follow to get from
 	 *         startPage to endPage (including both the start and end pages)
+	 *            if a path is not found within five minutes, an empty List
+	 *            will be returned
 	 */
 	public List<String> getPath(String startPage, String stopPage){
 		List<String> path = new ArrayList<>();
@@ -313,12 +313,12 @@ public class WikiMediator {
 	/**
 	 * Finds a list of pages that meet the structured query from the user
 	 *
-	 * @param query String representing the structured query.....
+	 * @param query String representing the structured query
 	 * @return a List of Strings containing the page titles meeting the
 	 *         requirements from query
 	 */
-	//List<String> executeQuery(String query){
-	//	return null;
-	//}
+	public List<String> executeQuery(String query){
+		return new ArrayList<String>();
+	}
 
 }
