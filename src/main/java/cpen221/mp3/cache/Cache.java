@@ -98,10 +98,10 @@ public class Cache<T extends Cacheable> {
      * is delayed.
      *
      * @param id the identifier of the object to "touch"
-     * @return true if successful and false otherwise
+     * @return true if successful and false if the object to touch
+     *          is not contained in the cache already
      */
     public boolean touch(String id) {
-        /* TODO: Implement this method */
         removeExpired();
         Long refresh = System.currentTimeMillis();
 
@@ -110,14 +110,9 @@ public class Cache<T extends Cacheable> {
                 cache.remove(t);
                 Long[] times = {refresh, refresh};
                 cache.put(t, times);
-                // check if successful
-                for (Map.Entry e: cache.entrySet()){
-                    if (e.getKey() == t && e.getValue() == times)
-                        return true;
-                }
+                return true;
             }
         }
-
         return false;
     }
 
@@ -127,23 +122,15 @@ public class Cache<T extends Cacheable> {
      * object in the cache.
      *
      * @param t the object to update
-     * @return true if successful and false otherwise
+     * @return true if successful and false if item to be updated does not exist in cache
      */
     public boolean update(T t) {
-        /* TODO: implement this method */
         removeExpired();
-        for (T find: cache.keySet()){
-            if (t.id().equals(find.id())){
-                // do something to update t, put new t
-                // mutable, do not need to put again maybe?
-                find = t;
-            }
-        }
+        Long[] time = {System.currentTimeMillis(), System.currentTimeMillis()};
 
-        for (T find: cache.keySet()){
-            if (t.equals(find)){
-                return true;
-            }
+        if(this.cache.containsKey(t)) {
+            cache.put(t, time);
+            return true;
         }
 
         return false;

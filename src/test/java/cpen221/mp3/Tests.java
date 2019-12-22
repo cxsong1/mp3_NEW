@@ -37,6 +37,46 @@ public class Tests {
 	}
 
 	@Test
+	public void cacheTouchTest(){
+		Cache cache = new Cache();
+		Francis f1 = new Francis("test");
+
+		cache.put(f1);
+		Assert.assertTrue(cache.touch("test"));
+		Assert.assertFalse(cache.touch("test2"));
+	}
+
+	@Test
+	public void removeExpired() throws InterruptedException {
+		Cache cache = new Cache(3, 1);
+		Francis f1 = new Francis();
+		Francis f2 = new Francis();
+		Francis f3 = new Francis();
+		System.out.println("f1 is: "+ f1 + " and f2 is: " + f2);
+		cache.put(f1);
+		cache.put(f2);
+		Thread.sleep(2000); //items should be removed from cache
+
+		cache.put(f3);
+		System.out.println(cache.cache.keySet());
+	}
+
+	@Test
+	public void cacheUpdateTest(){
+		Cache cache = new Cache();
+		Francis f1 = new Francis("1");
+		Francis f2 = new Francis("2");
+		Francis f3 = new Francis("3");
+
+		cache.put(f1);
+		Assert.assertTrue(cache.update(f1));
+		f1=f2;
+		assertEquals("2", f1.id);
+
+		Assert.assertFalse(cache.update(f3));
+	}
+
+	@Test
 	public void zeitgeistTest(){
 		List<String> results;
 		WikiMediator myMediator = new WikiMediator();
