@@ -5,6 +5,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+/**
+ * testing if the process in server is working to parse the correct JSONObject
+ */
 public class testJSONObject {
     public JSONObject process(JSONObject n) {
         JSONObject result = new JSONObject(n);
