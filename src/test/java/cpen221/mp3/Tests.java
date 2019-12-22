@@ -320,6 +320,14 @@ public class Tests {
 	}
 
 	@Test
+	public void getPathTimeout(){
+		WikiMediator wikiMediator = new WikiMediator();
+		List<String> path = wikiMediator.getPath("Sathish", "Korean War");
+
+		assertEquals(new ArrayList(), path);
+	}
+
+	@Test
 	public void testGetLinks(){
 		Wiki wiki = new Wiki("en.wikipedia.org");
 		System.out.println(wiki.getLinksOnPage("Android (operating system)"));

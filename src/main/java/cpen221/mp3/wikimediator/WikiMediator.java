@@ -1,45 +1,33 @@
 package cpen221.mp3.wikimediator;
 
-import java.lang.reflect.Array;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import cpen221.mp3.cache.NoSuchObjectException;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.google.gson.internal.LinkedTreeMap;
 import cpen221.mp3.cache.Cache;
 import fastily.jwiki.core.*;
-import fastily.jwiki.dwrap.*;
 import javafx.util.Pair;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Represents a WikiMediator that uses an API to interact with Wikipedia
  *
  * Abstraction Function:
  *     'this' is a Wikimediator with a Wiki, called wiki, being the main entry point to
- *     the jWiki API. It contains three HashMaps;
- *     a timeMap that maps a query to the time
- *     it was last accessed (either by using simpleSearch/getPage or through the cache), a freqMap
- *     that maps the query to the number of times it has been accessed (either by using
- *     simpleSearch/getPage or through the cache), and a requestMap that maps the String of the type of request
- *     to the time the request was made.
- *     Graph takes the names of all the page titles on wikipedia as vertices and
- *     all the path as directed edges.
+ *     the jWiki API. It contains three HashMaps:
+ *        a timeMap that maps a query to the time it was last accessed
+ *          (either by using simpleSearch/getPage or through the cache)
+ *        a freqMap that maps the query to the number of times it has
+ *          been accessed (either by using simpleSearch/getPage or through the cache)
+*         a requestMap that maps the String of the type of request
+ *          to the number of times the request was made.
  *
- *     'this' also contains a cache with a fixed capacity and timeout values which will
- *     save the title and page text searched by method getPage, stale items will be removed as appropriate.
+ *     'this' also contains a cache with a fixed capacity and timeout value which will
+ *     save the title and page text searched by method getPage. Stale items will be removed.
  *
  * Representation Invariant:
  *    Domain of wiki is from wikipedia.org
- *    timeMap, wiki, freqMap, cache, and requestMap
+ *    timeMap, wiki, freqMap, cache, and requestMap are non-null
  *    Cache capacity and timeout are greater than 0
  *    queries, frequencies, and dates accessed are non-null
  *    query is a non-empty String
@@ -278,15 +266,25 @@ public class WikiMediator {
 		queue.add(new Pair<>(startPage, "0"));
 		boolean found = false;
 
+		if(startPage == stopPage){
+			path.add(startPage);
+			return path;
+		}
+
+		long startTime = System.currentTimeMillis();
+
 		while (queue.size() > 0 && !found){ //starting size is 1
+			if((System.currentTimeMillis() - startTime) > 300000){
+				return new ArrayList<>();
+			}
 			String parent = queue.poll().getKey();
 			if ( !visited.contains(parent)){
 				visited.add(parent);
-				System.out.println("getting links for: " + parent);
 				List<String> neighbours = wiki.getLinksOnPage(parent);
 				for (String s : neighbours) {
 					if (s.equals(stopPage)){
 						found = true;
+						break;
 					}
 					queue.add(new Pair<>(s, parent));
 					tracing.add(new Pair<>(s, parent));
@@ -312,7 +310,6 @@ public class WikiMediator {
 		return path;
 	}
 
-	//TODO: need to modify the spec for the specific grammar of the query
 	/**
 	 * Finds a list of pages that meet the structured query from the user
 	 *

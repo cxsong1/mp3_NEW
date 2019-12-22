@@ -70,7 +70,7 @@ public class WikiMediatorClient {
             reply.put("status", "success");
             return reply;
         } catch (NumberFormatException nfe) {
-            throw new IOException("misformatted reply: " + reply);
+            throw new IOException("malformatted reply: " + reply);
         }
     }
 
@@ -111,6 +111,8 @@ public class WikiMediatorClient {
             System.out.println(y);
             //System.out.println("response("+x+") = "+y.get("response"));
 
+            /*JSONObject y2 = client.getReply();
+            System.out.println(y2);*/
             client.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
