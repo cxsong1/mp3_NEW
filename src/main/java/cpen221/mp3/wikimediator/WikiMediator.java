@@ -295,14 +295,14 @@ public class WikiMediator {
 			}
 		}
 		String currParent = tracing.get(tracing.size()-1).getValue();
-		if (currParent != "0") {
+		if (!currParent.equals("0")) {
 			path.add(currParent);
 		}
 
-		while(currParent != "0"){
+		while(!currParent.equals("0")){
 			int i = tracingKeys.indexOf(currParent);
 			currParent = tracing.get(i).getValue();
-			if(currParent=="0")
+			if(currParent.equals("0"))
 				break;
 			path.add(currParent);
 		}

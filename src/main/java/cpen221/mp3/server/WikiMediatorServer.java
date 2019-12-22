@@ -1,5 +1,6 @@
 package cpen221.mp3.server;
 
+import com.google.gson.Gson;
 import cpen221.mp3.cache.NoSuchObjectException;
 import cpen221.mp3.wikimediator.WikiMediator;
 import org.json.JSONObject;
@@ -8,6 +9,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+
+import static fastily.jwiki.util.GSONP.gson;
 
 /**
  * Represents a Server that receives requests over a network socket for tasks
@@ -149,15 +152,19 @@ public class WikiMediatorServer {
      * @param n indicates the request passed
      * @return A new JSONObject with response field
      */
-    public JSONObject process(JSONObject n) throws NoSuchObjectException {
+    public JSONObject process(JSONObject n) throws NoSuchObjectException, IOException {
         System.out.println("processing...");
         // new object does not contain id, fix this
-        //JSONObject result = new JSONObject(n, JSONObject.getNames(n));
         JSONObject result = new JSONObject();
-        //result.put("id", n.get("id"));
         int id = n.optInt("id");
         result.put("id", id);
         String type = n.getString("type").replaceAll(",", "");
+        File fr = new File("local");
+        String n1 = n.toString();
+       // try (FileWriter file = new FileWriter(fr)) {
+         //   file.write(n1);
+           // System.out.println("Successfully Copied JSON Object to File...");
+        //}
 
         if (type.equals("simpleSearch")){
             String query = n.getString("query").replaceAll(",", "");
@@ -197,6 +204,8 @@ public class WikiMediatorServer {
             int response = process.peakLoad30s();
             result.put("response", response);
         }
+        else
+            throw new NoSuchObjectException();
 
         return result;
     }
