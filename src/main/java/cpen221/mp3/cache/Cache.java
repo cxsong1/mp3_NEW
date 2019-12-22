@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implements a cache which stores recently accessed objects so it can be accessed faster in the future.
+ * Implements a cache which stores recently accessed objects so they can be accessed faster in the future.
  *
  * Abstraction Function:
  *      Cache is a HashMap mapping a generic object that extends the interface Cacheable
- *      to an array that takes the time that it was stored/ refreshed and last accessed. It has a capacity and
+ *      to an array that takes the time that it was stored/refreshed and last accessed. It has a capacity and
  *      timeout value which determine, respectively, the maximum number of items that can be stored in the cache at
  *      once and after how long an item must be removed.
  *
@@ -27,11 +27,10 @@ public class Cache<T extends Cacheable> {
     public static final int DTIMEOUT = 3600;
     public int timeout;
 
-    /* TODO: Implement this datatype */
     public Map<T, Long[]> cache;
 
     /**
-     * Create a cache with a fixed capacity and a timeout value.
+     * Create a cache with a user-specified capacity and a timeout value.
      * Objects in the cache that have not been refreshed within the timeout period
      * are removed from the cache.
      *
@@ -55,7 +54,7 @@ public class Cache<T extends Cacheable> {
     /**
      * Add a value to the cache.
      * If the cache is full then remove the least recently accessed object to
-     * make room for the new object.
+     *    make room for the new object.
      * @param t object to be put in the cache
      * @return true if object is successfully added to the cache and false if the value is already in the cache
      */
@@ -76,13 +75,13 @@ public class Cache<T extends Cacheable> {
     }
 
     /**
+     * Retrieves and returns the object associated with the id provided
+     *
      * @param id the identifier of the object to be retrieved
      * @return the object that matches the identifier from the cache
+     * @throws NoSuchObjectException if there is no object associated with "id" inside the cache
      */
     public T get(String id) throws NoSuchObjectException {
-        /* TODO: change this */
-        /* Do not return null. Throw a suitable checked exception when an object
-            is not in the cache. */
         removeExpired();
         for (T t: cache.keySet()){
             if (t.id().equals(id)){
@@ -99,7 +98,7 @@ public class Cache<T extends Cacheable> {
      *
      * @param id the identifier of the object to "touch"
      * @return true if successful and false if the object to touch
-     *          is not contained in the cache already
+     *          is not contained in the cache
      */
     public boolean touch(String id) {
         removeExpired();
@@ -137,9 +136,7 @@ public class Cache<T extends Cacheable> {
     }
 
     /**
-     * When cache exceeds capacity, and expired items are already removed,
-     * Checks for the least recently accessed object and removes it one at a time
-     *
+     * When number of items in the cache exceeds capacity, removes least recently accessed object
      */
     private void removeLeastRecent(){
         T leastRecent = null;
@@ -157,16 +154,14 @@ public class Cache<T extends Cacheable> {
     }
 
     /**
-     * Removes the items stored at time more than a timeout value away from current time
+     * Removes the items stored at time with more than a "timeout" value difference from current time
      *
      */
     private void removeExpired(){
         for (Map.Entry e: this.cache.entrySet()){
             Long[] times = (Long[]) e.getValue();
             Long storedTime = times[0];
-            // timeout? DTIMEOUT?
             if ( System.currentTimeMillis() - storedTime > timeout ){
-                // can we call remove on entry?
                 cache.remove(e);
             }
         }

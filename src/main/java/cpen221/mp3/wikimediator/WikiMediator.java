@@ -1,45 +1,33 @@
 package cpen221.mp3.wikimediator;
 
-import java.lang.reflect.Array;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import cpen221.mp3.cache.NoSuchObjectException;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.google.gson.internal.LinkedTreeMap;
 import cpen221.mp3.cache.Cache;
 import fastily.jwiki.core.*;
-import fastily.jwiki.dwrap.*;
 import javafx.util.Pair;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Represents a WikiMediator that uses an API to interact with Wikipedia
  *
  * Abstraction Function:
  *     'this' is a Wikimediator with a Wiki, called wiki, being the main entry point to
- *     the jWiki API. It contains three HashMaps;
- *     a timeMap that maps a query to the time
- *     it was last accessed (either by using simpleSearch/getPage or through the cache), a freqMap
- *     that maps the query to the number of times it has been accessed (either by using
- *     simpleSearch/getPage or through the cache), and a requestMap that maps the String of the type of request
- *     to the time the request was made.
- *     Graph takes the names of all the page titles on wikipedia as vertices and
- *     all the path as directed edges.
+ *     the jWiki API. It contains three HashMaps:
+ *        a timeMap that maps a query to the time it was last accessed
+ *          (either by using simpleSearch/getPage or through the cache)
+ *        a freqMap that maps the query to the number of times it has
+ *          been accessed (either by using simpleSearch/getPage or through the cache)
+*         a requestMap that maps the String of the type of request
+ *          to the number of times the request was made.
  *
- *     'this' also contains a cache with a fixed capacity and timeout values which will
- *     save the title and page text searched by method getPage, stale items will be removed as appropriate.
+ *     'this' also contains a cache with a fixed capacity and timeout value which will
+ *     save the title and page text searched by method getPage. Stale items will be removed.
  *
  * Representation Invariant:
  *    Domain of wiki is from wikipedia.org
- *    timeMap, wiki, freqMap, cache, and requestMap
+ *    timeMap, wiki, freqMap, cache, and requestMap are non-null
  *    Cache capacity and timeout are greater than 0
  *    queries, frequencies, and dates accessed are non-null
  *    query is a non-empty String
@@ -71,7 +59,7 @@ public class WikiMediator {
 	 *
 	 * @param query String to search for
 	 * @param limit max number of elements (ie. search results) returned
-	 * @return a List of Strings containing the page titles that match the query string
+	 * @return a List of Strings of the page titles that match the query string
 	 */
 	public List<String> simpleSearch(String query, int limit) {
 		if(this.freqMap.containsKey(query)){
@@ -88,13 +76,12 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Returns the text on a given Wikipedia page
-	 * and store the text and title to cache,
-	 * if cache already contains the title being searched,
-	 * access it from the cache.
+	 * Returns the text on a given Wikipedia page by either:
+	 *    accessing it from the cache if it has recently been searched for OR
+	 *    searching it up on Wikipedia then storing the title and text to the cache
 	 *
 	 * @param pageTitle string representing the Wikipedia page you want to find
-	 * @return String with the text on the "pageTitle" Wikipedia page0o
+	 * @return String with the text on the "pageTitle" Wikipedia page
 	 */
 	public String getPage(String pageTitle) throws NoSuchObjectException {
 		String text = "";
@@ -122,7 +109,7 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Finds all the possible pages that can be found by following UP TO a max number
+	 * Finds all the possible pages that can be found by following up to a max number
 	 *    of links from a specified starting point
 	 *
 	 * @param pageTitle String name of the starting Wikipedia page
@@ -130,7 +117,6 @@ public class WikiMediator {
 	 * @return a List of Strings that can be reached by following a maximum of hops links from pageTitle
 	 */
 
-	//MAKE SURE ITS UP TO AND NOT NECESSARILY JUST "HOPS" NUMBER OF LINKS!!!!
 	public List<String> getConnectedPages(String pageTitle, int hops){
 		Set<String> visited = new HashSet<>();
 		Queue<Pair<String, Integer>> queue = new LinkedList<>();
@@ -162,12 +148,12 @@ public class WikiMediator {
 		 * they can be organized in any arbitrary order
 		 * TODO: fix this (ie. order by time searched)
 		 *
-		 * @param limit max number of requests returned
-		 * @return a List of Strings containing the most common searched titles,
+		 * @param limit max number of titles returned
+		 * @return a List of Strings containing the most commonly searched titles,
 		 *         up to a max number, in non-increasing order
 		 */
 	public List<String> zeitgeist(int limit){
-		Map<String, Integer> sortedFreqMap = new HashMap<>();
+		Map<String, Integer> sortedFreqMap;
 		int count = 0;
 		List<String> mostCommon = new ArrayList<>();
 
@@ -192,7 +178,7 @@ public class WikiMediator {
 	}
 
 	/**
-	 * Finds and sorts the most search frequent requests (using simple search or getPage) made in the last 30secs
+	 * Finds and sorts the most frequent search requests (using simple search or getPage) made in the last 30secs
 	 *
 	 * @param limit max number of elements returned in the List
 	 * @return a List of Strings containing the most common searched titles in the
@@ -226,7 +212,7 @@ public class WikiMediator {
 
 	/**
 	 * Finds the max number of requests seen in any 30-second window
-	 * When ths user makes this request, the current peakLoad 30s will not be counted as a request.
+	 * The current call to peakLoad30s will not be counted as a request.
 	 *
 	 * @return the max number of search requests seen in any 30-second window
 	 */
@@ -261,9 +247,11 @@ public class WikiMediator {
 	 * Finds path of links between two Wikipedia pages
 	 *
 	 * @param startPage String name of Wikipedia page at which to start
-	 * @param stopPage String name of the Wikipedia page we want to end on
+	 * @param stopPage String name of the Wikipedia page at which to end
 	 * @return a List of Strings containing the links to follow to get from
 	 *         startPage to endPage (including both the start and end pages)
+	 *            if a path is not found within five minutes, an empty List
+	 *            will be returned
 	 */
 	public List<String> getPath(String startPage, String stopPage){
 		List<String> path = new ArrayList<>();
@@ -278,15 +266,25 @@ public class WikiMediator {
 		queue.add(new Pair<>(startPage, "0"));
 		boolean found = false;
 
+		if(startPage == stopPage){
+			path.add(startPage);
+			return path;
+		}
+
+		long startTime = System.currentTimeMillis();
+
 		while (queue.size() > 0 && !found){ //starting size is 1
+			if((System.currentTimeMillis() - startTime) > 300000){
+				return new ArrayList<>();
+			}
 			String parent = queue.poll().getKey();
 			if ( !visited.contains(parent)){
 				visited.add(parent);
-				System.out.println("getting links for: " + parent);
 				List<String> neighbours = wiki.getLinksOnPage(parent);
 				for (String s : neighbours) {
 					if (s.equals(stopPage)){
 						found = true;
+						break;
 					}
 					queue.add(new Pair<>(s, parent));
 					tracing.add(new Pair<>(s, parent));
@@ -312,16 +310,15 @@ public class WikiMediator {
 		return path;
 	}
 
-	//TODO: need to modify the spec for the specific grammar of the query
 	/**
 	 * Finds a list of pages that meet the structured query from the user
 	 *
-	 * @param query String representing the structured query.....
+	 * @param query String representing the structured query
 	 * @return a List of Strings containing the page titles meeting the
 	 *         requirements from query
 	 */
-	//List<String> executeQuery(String query){
-	//	return null;
-	//}
+	public List<String> executeQuery(String query){
+		return new ArrayList<String>();
+	}
 
 }
