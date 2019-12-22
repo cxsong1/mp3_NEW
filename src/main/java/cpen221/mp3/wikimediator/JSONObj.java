@@ -6,15 +6,17 @@ import org.json.JSONObject;
 /**
  * Abstraction Function:
  *    item is a JSONObject that implements the interface Cacheable.
- *    It takes a wikipedia page, and stores the title of the wikipedia page as a String id,
- *    and the full text of the wikipedia page in a String pageText
+ *    It takes a Wikipedia page, and stores the title of the page as a String id,
+ *    and the full text of the wikipedia page in a String called pageText
  *
  * Representation Invariant:
  *    item is not null
- *    Strings pageTitle and pageText are not null or empty
+ *    Strings pageTitle and pageText are not null nor empty
  *    pageTitle refers to the exact title of an existing Wikipedia page
  *
  */
+
+//This is used for testing the cache
 class JSONObj implements Cacheable {
 
 	public JSONObject item;
